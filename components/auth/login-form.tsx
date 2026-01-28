@@ -93,16 +93,15 @@ export function LoginForm() {
   return (
     <div className="space-y-4">
       {/* Google Sign In Button */}
-      <Button
+      <button
         type="button"
-        variant="outline"
-        className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-900 border-gray-300"
+        className="w-full flex items-center justify-center gap-3 h-10 px-4 rounded-lg bg-white hover:bg-gray-100 text-gray-800 font-medium border border-gray-300 shadow-sm transition-colors disabled:opacity-50"
         onClick={handleGoogleSignIn}
         disabled={googleLoading}
       >
         <GoogleIcon />
         {googleLoading ? "Redirecting..." : "Continue with Google"}
-      </Button>
+      </button>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
