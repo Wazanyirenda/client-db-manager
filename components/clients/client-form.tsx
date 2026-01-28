@@ -72,7 +72,7 @@ export function ClientForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Name *
           </label>
           <Input
@@ -83,7 +83,7 @@ export function ClientForm({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Email
           </label>
           <Input
@@ -94,7 +94,7 @@ export function ClientForm({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Phone
           </label>
           <Input
@@ -104,7 +104,7 @@ export function ClientForm({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Company
           </label>
           <Input
@@ -114,7 +114,7 @@ export function ClientForm({
           />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Address
           </label>
           <Input
@@ -124,7 +124,7 @@ export function ClientForm({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Status
           </label>
           <Select

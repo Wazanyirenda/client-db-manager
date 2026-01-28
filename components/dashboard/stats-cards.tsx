@@ -23,29 +23,29 @@ export function StatsCards({ clients }: StatsCardsProps) {
       label: 'Total Clients',
       value: totalClients,
       icon: Users,
-      color: 'text-blue-600 dark:text-blue-400',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100',
     },
     {
       label: 'Active Clients',
       value: activeClients,
       icon: UserCheck,
-      color: 'text-green-600 dark:text-green-400',
-      bgColor: 'bg-green-100 dark:bg-green-900/30',
+      color: 'text-green-600',
+      bgColor: 'bg-green-100',
     },
     {
       label: 'Inactive Clients',
       value: inactiveClients,
       icon: UserX,
-      color: 'text-red-600 dark:text-red-400',
-      bgColor: 'bg-red-100 dark:bg-red-900/30',
+      color: 'text-red-600',
+      bgColor: 'bg-red-100',
     },
     {
       label: 'Added This Month',
       value: clientsThisMonth,
       icon: Calendar,
-      color: 'text-purple-600 dark:text-purple-400',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100',
     },
   ];
 
@@ -56,14 +56,14 @@ export function StatsCards({ clients }: StatsCardsProps) {
         return (
           <div
             key={stat.label}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700"
+            className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-medium text-gray-600">
                   {stat.label}
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-gray-900 mt-1">
                   {stat.value}
                 </p>
               </div>
@@ -77,5 +77,3 @@ export function StatsCards({ clients }: StatsCardsProps) {
     </div>
   );
 }
-
-
