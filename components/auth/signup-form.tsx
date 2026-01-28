@@ -34,6 +34,8 @@ function GoogleIcon() {
 
 export function SignupForm() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -85,6 +87,11 @@ export function SignupForm() {
     setSuccess(false);
 
     // Validation
+    if (!fullName.trim()) {
+      setError("Full name is required");
+      return;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -103,6 +110,10 @@ export function SignupForm() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          full_name: fullName,
+          company_name: companyName,
+        },
       },
     });
 
@@ -143,9 +154,39 @@ export function SignupForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700" htmlFor="fullName">
+              Full Name <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="fullName"
+              type="text"
+              autoComplete="name"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="John Doe"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700" htmlFor="companyName">
+              Company / Organization
+            </label>
+            <Input
+              id="companyName"
+              type="text"
+              autoComplete="organization"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="Acme Inc. (optional)"
+            />
+          </div>
+        </div>
+
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700" htmlFor="email">
-            Email
+            Email <span className="text-red-500">*</span>
           </label>
           <Input
             id="email"
@@ -162,7 +203,7 @@ export function SignupForm() {
             className="text-sm font-medium text-gray-700"
             htmlFor="password"
           >
-            Password
+            Password <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Input
@@ -206,7 +247,7 @@ export function SignupForm() {
             className="text-sm font-medium text-gray-700"
             htmlFor="confirmPassword"
           >
-            Confirm Password
+            Confirm Password <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Input
@@ -265,7 +306,7 @@ export function SignupForm() {
         )}
 
         <Button type="submit" className="w-full" disabled={loading || success || passwordsDontMatch}>
-          {loading ? "Creating account..." : success ? "Account Created!" : "Sign up with Email"}
+          {loading ? "Creating account..." : success ? "Account Created!" : "Create Account"}
         </Button>
 
         <div className="text-center text-sm text-gray-500">

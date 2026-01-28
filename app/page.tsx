@@ -3,11 +3,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { useClients, Client } from '@/lib/hooks/use-clients';
+import { useClients, useProfile, Client, ClientType } from '@/lib/hooks/use-clients';
 import { exportToCSV, exportToExcel, exportToPDF } from '@/lib/export';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { ClientForm } from '@/components/clients/client-form';
 import { ClientDialog } from '@/components/clients/client-dialog';
+import { ClientDetailsModal } from '@/components/clients/client-details-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,9 +35,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Edit, Trash2, MoreVertical, Download, Search, LogOut, Plus } from 'lucide-react';
+import { Edit, Trash2, Download, Search, LogOut, Plus, Eye, User } from 'lucide-react';
 
-type SortField = 'name' | 'email' | 'company' | 'status' | 'created_at';
+type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'created_at';
 type SortDirection = 'asc' | 'desc';
 
 export default function Home() {
@@ -48,7 +49,9 @@ export default function Home() {
     updateClient,
     deleteClient,
     toggleStatus,
+    updateLastContact,
   } = useClients();
+  const { profile } = useProfile();
 
   // Check authentication
   useEffect(() => {
@@ -64,14 +67,15 @@ export default function Home() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
+  const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
 
   // Filter and sort clients
   const filteredAndSortedClients = useMemo(() => {
@@ -80,12 +84,16 @@ export default function Home() {
         client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         client.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         client.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.company?.toLowerCase().includes(searchQuery.toLowerCase());
+        client.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.website?.toLowerCase().includes(searchQuery.toLowerCase());
       
       const matchesStatus =
         statusFilter === 'all' || client.status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      const matchesType =
+        typeFilter === 'all' || client.client_type === typeFilter;
+
+      return matchesSearch && matchesStatus && matchesType;
     });
 
     filtered.sort((a, b) => {
@@ -108,7 +116,7 @@ export default function Home() {
     });
 
     return filtered;
-  }, [clients, searchQuery, statusFilter, sortField, sortDirection]);
+  }, [clients, searchQuery, statusFilter, typeFilter, sortField, sortDirection]);
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedClients.length / pageSize);
@@ -148,6 +156,19 @@ export default function Home() {
     router.push('/login');
   };
 
+  const getClientTypeBadge = (type: ClientType | null) => {
+    switch (type) {
+      case 'Paying':
+        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Paying</Badge>;
+      case 'Lead':
+        return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Lead</Badge>;
+      case 'Data':
+        return <Badge className="bg-purple-100 text-purple-700 border-purple-200">Data</Badge>;
+      default:
+        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">-</Badge>;
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -170,7 +191,13 @@ export default function Home() {
                 Client Database
               </h1>
               <p className="text-sm text-gray-600 mt-1">
-                Manage your client information and relationships
+                {profile?.company_name ? (
+                  <>Welcome, {profile.full_name || 'User'} - {profile.company_name}</>
+                ) : profile?.full_name ? (
+                  <>Welcome, {profile.full_name}</>
+                ) : (
+                  'Manage your client information and relationships'
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -240,7 +267,7 @@ export default function Home() {
 
         {/* Search and Filters */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -253,7 +280,7 @@ export default function Home() {
                 className="pl-10"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -261,6 +288,17 @@ export default function Home() {
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="Active">Active</SelectItem>
                 <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={typeFilter} onValueChange={(value) => { setTypeFilter(value); setCurrentPage(1); }}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="Lead">Leads</SelectItem>
+                <SelectItem value="Data">Data</SelectItem>
+                <SelectItem value="Paying">Paying Clients</SelectItem>
               </SelectContent>
             </Select>
             <Select
@@ -312,6 +350,12 @@ export default function Home() {
                   </th>
                   <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('client_type')}
+                  >
+                    Type {sortField === 'client_type' && (sortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('status')}
                   >
                     Status {sortField === 'status' && (sortDirection === 'asc' ? '↑' : '↓')}
@@ -324,15 +368,16 @@ export default function Home() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedClients.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                      No clients found. {searchQuery || statusFilter !== 'all' ? 'Try adjusting your filters.' : 'Add your first client to get started.'}
+                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                      No clients found. {searchQuery || statusFilter !== 'all' || typeFilter !== 'all' ? 'Try adjusting your filters.' : 'Add your first client to get started.'}
                     </td>
                   </tr>
                 ) : (
                   paginatedClients.map((client) => (
                     <tr
                       key={client.id}
-                      className="hover:bg-gray-50"
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => setViewingClient(client)}
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {client.name}
@@ -347,6 +392,9 @@ export default function Home() {
                         {client.company || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
+                        {getClientTypeBadge(client.client_type)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <Badge
                           variant={client.status === 'Active' ? 'active' : 'inactive'}
                         >
@@ -354,21 +402,22 @@ export default function Home() {
                         </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => toggleStatus(client.id, client.status)}
+                            onClick={() => setViewingClient(client)}
                             className="h-8 w-8 p-0"
-                            title={`Toggle to ${client.status === 'Active' ? 'Inactive' : 'Active'}`}
+                            title="View details"
                           >
-                            {client.status === 'Active' ? '✓' : '✗'}
+                            <Eye className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => setEditingClient(client)}
                             className="h-8 w-8 p-0"
+                            title="Edit client"
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -377,6 +426,7 @@ export default function Home() {
                             size="sm"
                             onClick={() => setDeletingClient(client)}
                             className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                            title="Delete client"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -445,6 +495,20 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Client Details Modal */}
+      <ClientDetailsModal
+        client={viewingClient}
+        open={!!viewingClient}
+        onClose={() => setViewingClient(null)}
+        onEdit={(client) => {
+          setViewingClient(null);
+          setEditingClient(client);
+        }}
+        onUpdateLastContact={async (id) => {
+          await updateLastContact(id);
+        }}
+      />
+
       {/* Edit Dialog */}
       {editingClient && (
         <ClientDialog
@@ -457,6 +521,10 @@ export default function Home() {
             address: editingClient.address || '',
             company: editingClient.company || '',
             status: editingClient.status || 'Active',
+            client_type: editingClient.client_type || 'Lead',
+            website: editingClient.website || '',
+            notes: editingClient.notes || '',
+            source: editingClient.source || '',
           }}
           onSubmit={async (data) => {
             await updateClient(editingClient.id, data);

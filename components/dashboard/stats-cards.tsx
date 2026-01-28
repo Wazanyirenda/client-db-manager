@@ -1,7 +1,7 @@
 "use client";
 
 import { Client } from '@/lib/hooks/use-clients';
-import { Users, UserCheck, UserX, Calendar } from 'lucide-react';
+import { Users, UserCheck, UserX, DollarSign, Target, Database } from 'lucide-react';
 
 interface StatsCardsProps {
   clients: Client[];
@@ -12,11 +12,10 @@ export function StatsCards({ clients }: StatsCardsProps) {
   const activeClients = clients.filter(c => c.status === 'Active').length;
   const inactiveClients = clients.filter(c => c.status === 'Inactive').length;
   
-  const thisMonth = new Date();
-  thisMonth.setDate(1);
-  const clientsThisMonth = clients.filter(
-    c => new Date(c.created_at) >= thisMonth
-  ).length;
+  // Client type counts
+  const leadClients = clients.filter(c => c.client_type === 'Lead').length;
+  const dataClients = clients.filter(c => c.client_type === 'Data').length;
+  const payingClients = clients.filter(c => c.client_type === 'Paying').length;
 
   const stats = [
     {
@@ -27,48 +26,62 @@ export function StatsCards({ clients }: StatsCardsProps) {
       bgColor: 'bg-blue-100',
     },
     {
-      label: 'Active Clients',
+      label: 'Active',
       value: activeClients,
       icon: UserCheck,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
-      label: 'Inactive Clients',
+      label: 'Inactive',
       value: inactiveClients,
       icon: UserX,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
+      color: 'text-gray-600',
+      bgColor: 'bg-gray-100',
     },
     {
-      label: 'Added This Month',
-      value: clientsThisMonth,
-      icon: Calendar,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      label: 'Leads',
+      value: leadClients,
+      icon: Target,
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-100',
+    },
+    {
+      label: 'Data',
+      value: dataClients,
+      icon: Database,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100',
+    },
+    {
+      label: 'Paying Clients',
+      value: payingClients,
+      icon: DollarSign,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-100',
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
           <div
             key={stat.label}
-            className="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
+            className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`${stat.bgColor} p-2 rounded-lg`}>
+                <Icon className={`h-5 w-5 ${stat.color}`} />
+              </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {stat.label}
-                </p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="text-2xl font-bold text-gray-900">
                   {stat.value}
                 </p>
-              </div>
-              <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                <Icon className={`h-6 w-6 ${stat.color}`} />
+                <p className="text-xs font-medium text-gray-500">
+                  {stat.label}
+                </p>
               </div>
             </div>
           </div>
