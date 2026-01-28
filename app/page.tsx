@@ -192,7 +192,7 @@ export default function Home() {
                   <DropdownMenuItem
                     onClick={() => handleExport('csv')}
                     className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                  >
+            >
                     Export as CSV
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -204,7 +204,7 @@ export default function Home() {
                   <DropdownMenuItem
                     onClick={() => handleExport('pdf')}
                     className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                  >
+            >
                     Export as PDF
                   </DropdownMenuItem>
                 </DropdownMenuContent>

@@ -128,16 +128,16 @@ export function SignupForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-zinc-700" />
+          <span className="w-full border-t border-gray-300 dark:border-gray-600" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[#16171f] px-2 text-zinc-500">Or continue with email</span>
+          <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with email</span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-zinc-200" htmlFor="email">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-200" htmlFor="email">
             Email
           </label>
           <Input
@@ -152,7 +152,7 @@ export function SignupForm() {
         </div>
         <div className="space-y-1.5">
           <label
-            className="text-sm font-medium text-zinc-200"
+            className="text-sm font-medium text-gray-700 dark:text-gray-200"
             htmlFor="password"
           >
             Password
@@ -170,7 +170,7 @@ export function SignupForm() {
         </div>
         <div className="space-y-1.5">
           <label
-            className="text-sm font-medium text-zinc-200"
+            className="text-sm font-medium text-gray-700 dark:text-gray-200"
             htmlFor="confirmPassword"
           >
             Confirm Password
@@ -194,10 +194,10 @@ export function SignupForm() {
 
         {success && (
           <div className="space-y-2">
-            <p className="text-sm text-green-400" aria-live="polite">
+            <p className="text-sm text-green-600 dark:text-green-400" aria-live="polite">
               Account created successfully! Redirecting to login...
             </p>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Check your email to verify your account (if email confirmation is enabled).
             </p>
           </div>
@@ -207,9 +207,9 @@ export function SignupForm() {
           {loading ? "Creating account..." : success ? "Account Created!" : "Sign up with Email"}
         </Button>
 
-        <div className="text-center text-sm text-zinc-400">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
           Already have an account?{" "}
-          <Link href="/login" className="text-purple-400 hover:text-purple-300 underline">
+          <Link href="/login" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline">
             Sign in
           </Link>
         </div>

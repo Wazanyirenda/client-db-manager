@@ -4,21 +4,21 @@ A modern, full-featured client management dashboard built with Next.js 16, Supab
 
 ## Features
 
-- 🔐 **Authentication** - Secure user authentication with Supabase Auth
-- 📊 **Dashboard** - Real-time statistics and metrics
-- 👥 **Client Management** - Full CRUD operations (Create, Read, Update, Delete)
-- 🔍 **Search & Filter** - Search clients by name, email, phone, or company
-- 📈 **Sorting** - Sort by any column (name, email, company, status, date)
-- 📄 **Pagination** - Navigate through large client lists easily
-- 📤 **Export** - Export client data to CSV, Excel, or PDF
-- 🎨 **Modern UI** - Beautiful, responsive design with dark mode support
-- ✅ **Status Management** - Track active/inactive client status
+- **Authentication** - Secure user authentication with Supabase Auth and Google OAuth
+- **Dashboard** - Real-time statistics and metrics
+- **Client Management** - Full CRUD operations (Create, Read, Update, Delete)
+- **Search & Filter** - Search clients by name, email, phone, or company
+- **Sorting** - Sort by any column (name, email, company, status, date)
+- **Pagination** - Navigate through large client lists easily
+- **Export** - Export client data to CSV, Excel, or PDF
+- **Modern UI** - Beautiful, responsive design with dark and light mode support
+- **Status Management** - Track active/inactive client status
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
+- **Authentication**: Supabase Auth + Google OAuth
 - **Styling**: Tailwind CSS
 - **UI Components**: Radix UI
 - **Type Safety**: TypeScript
@@ -68,7 +68,7 @@ npm run dev
 ### Creating Your First User
 
 1. Navigate to `/signup` or click "Sign up" on the login page
-2. Create an account with your email and password
+2. Create an account with your email and password, or sign in with Google
 3. Sign in and start managing your clients!
 
 ## Project Structure
@@ -79,19 +79,20 @@ client-db-manager/
 │   ├── (auth)/          # Authentication pages
 │   │   ├── login/
 │   │   └── signup/
+│   ├── auth/callback/   # OAuth callback handler
 │   ├── page.tsx         # Main dashboard
 │   └── layout.tsx       # Root layout
 ├── components/
 │   ├── auth/            # Authentication components
-│   ├── clients/          # Client management components
-│   ├── dashboard/        # Dashboard components
-│   └── ui/               # Reusable UI components
+│   ├── clients/         # Client management components
+│   ├── dashboard/       # Dashboard components
+│   └── ui/              # Reusable UI components
 ├── lib/
-│   ├── hooks/            # Custom React hooks
-│   ├── supabase/         # Supabase client configuration
-│   └── export.ts         # Export utilities
+│   ├── hooks/           # Custom React hooks
+│   ├── supabase/        # Supabase client configuration
+│   └── export.ts        # Export utilities
 └── supabase/
-    └── migrations/       # Database migrations
+    └── migrations/      # Database migrations
 ```
 
 ## Features in Detail

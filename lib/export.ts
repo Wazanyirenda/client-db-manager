@@ -82,7 +82,7 @@ export function exportToPDF(clients: Client[]) {
     ]),
     startY: 35,
     styles: { fontSize: 9 },
-    headStyles: { fillColor: [79, 70, 229] },
+    headStyles: { fillColor: [37, 99, 235] },
     alternateRowStyles: { fillColor: [245, 245, 245] },
   });
 
