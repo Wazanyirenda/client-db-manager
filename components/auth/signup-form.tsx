@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Eye, EyeOff, Check, X } from "lucide-react";
 
 // Google icon component
 function GoogleIcon() {
@@ -36,6 +37,8 @@ export function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +55,11 @@ export function SignupForm() {
     };
     checkSession();
   }, [router]);
+
+  // Real-time password validation
+  const passwordsMatch = password && confirmPassword && password === confirmPassword;
+  const passwordsDontMatch = confirmPassword && password !== confirmPassword;
+  const passwordLongEnough = password.length >= 6;
 
   const handleGoogleSignUp = async () => {
     setError(null);
@@ -156,16 +164,42 @@ export function SignupForm() {
           >
             Password
           </label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
-            minLength={6}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              minLength={6}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          {password && (
+            <p className={`text-xs ${passwordLongEnough ? 'text-green-600' : 'text-gray-500'}`}>
+              {passwordLongEnough ? (
+                <span className="flex items-center gap-1">
+                  <Check className="h-3 w-3" /> At least 6 characters
+                </span>
+              ) : (
+                `${password.length}/6 characters minimum`
+              )}
+            </p>
+          )}
         </div>
         <div className="space-y-1.5">
           <label
@@ -174,19 +208,47 @@ export function SignupForm() {
           >
             Confirm Password
           </label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            autoComplete="new-password"
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm your password"
-          />
+          <div className="relative">
+            <Input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm your password"
+              className={`pr-10 ${passwordsDontMatch ? 'border-red-400 focus-visible:ring-red-400 focus-visible:border-red-400' : ''} ${passwordsMatch ? 'border-green-500 focus-visible:ring-green-500 focus-visible:border-green-500' : ''}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          {confirmPassword && (
+            <p className={`text-xs flex items-center gap-1 ${passwordsMatch ? 'text-green-600' : 'text-red-500'}`}>
+              {passwordsMatch ? (
+                <>
+                  <Check className="h-3 w-3" /> Passwords match
+                </>
+              ) : (
+                <>
+                  <X className="h-3 w-3" /> Passwords do not match
+                </>
+              )}
+            </p>
+          )}
         </div>
 
         {error && (
-          <p className="text-sm text-red-400" aria-live="polite">
+          <p className="text-sm text-red-500" aria-live="polite">
             {error}
           </p>
         )}
@@ -202,7 +264,7 @@ export function SignupForm() {
           </div>
         )}
 
-        <Button type="submit" className="w-full" disabled={loading || success}>
+        <Button type="submit" className="w-full" disabled={loading || success || passwordsDontMatch}>
           {loading ? "Creating account..." : success ? "Account Created!" : "Sign up with Email"}
         </Button>
 
@@ -216,4 +278,3 @@ export function SignupForm() {
     </div>
   );
 }
-
