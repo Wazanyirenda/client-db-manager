@@ -105,16 +105,16 @@ export function LoginForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-300 dark:border-gray-600" />
+          <span className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with email</span>
+          <span className="bg-white px-2 text-gray-500">Or continue with email</span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-200" htmlFor="email">
+          <label className="text-sm font-medium text-gray-700" htmlFor="email">
             Email
           </label>
           <Input
@@ -128,7 +128,7 @@ export function LoginForm() {
         </div>
         <div className="space-y-1.5">
           <label
-            className="text-sm font-medium text-gray-700 dark:text-gray-200"
+            className="text-sm font-medium text-gray-700"
             htmlFor="password"
           >
             Password
@@ -153,9 +153,9 @@ export function LoginForm() {
           {loading ? "Signing in..." : "Sign in with Email"}
         </Button>
 
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-center text-sm text-gray-500">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline">
+          <Link href="/signup" className="text-blue-600 hover:text-blue-500 underline">
             Sign up
           </Link>
         </div>
