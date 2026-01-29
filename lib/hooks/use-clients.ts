@@ -5,6 +5,8 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 
 export type ClientType = 'Lead' | 'Data' | 'Paying';
+export type PipelineStage = 'Inquiry' | 'Contacted' | 'Proposal' | 'Won' | 'Lost';
+export type InvoiceStatus = 'Unpaid' | 'Paid' | 'Overdue';
 
 export interface Client {
   id: string;
@@ -19,6 +21,11 @@ export interface Client {
   notes: string | null;
   last_contact: string | null;
   source: string | null;
+  pipeline_stage: PipelineStage | null;
+  next_follow_up: string | null;
+  deal_value: number | null;
+  invoice_status: InvoiceStatus | null;
+  invoice_due_date: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -34,6 +41,11 @@ export interface ClientFormData {
   website: string;
   notes: string;
   source: string;
+  pipeline_stage: PipelineStage;
+  next_follow_up: string;
+  deal_value: string;
+  invoice_status: InvoiceStatus;
+  invoice_due_date: string;
 }
 
 export interface Profile {
@@ -41,6 +53,12 @@ export interface Profile {
   email: string | null;
   full_name: string | null;
   company_name: string | null;
+  phone: string | null;
+  industry: string | null;
+  website: string | null;
+  role: string | null;
+  company_size: string | null;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -84,11 +102,42 @@ export function useClients() {
     fetchClients();
   }, []);
 
+  const normalizeClientPayload = (clientData: Partial<ClientFormData>) => {
+    const dealValue =
+      clientData.deal_value === undefined
+        ? undefined
+        : clientData.deal_value === ''
+          ? null
+          : Number(clientData.deal_value);
+
+    const nextFollowUp =
+      clientData.next_follow_up === undefined
+        ? undefined
+        : clientData.next_follow_up
+          ? new Date(clientData.next_follow_up).toISOString()
+          : null;
+
+    const invoiceDueDate =
+      clientData.invoice_due_date === undefined
+        ? undefined
+        : clientData.invoice_due_date
+          ? clientData.invoice_due_date
+          : null;
+
+    return {
+      ...clientData,
+      deal_value: Number.isNaN(dealValue as number) ? null : dealValue,
+      next_follow_up: nextFollowUp,
+      invoice_due_date: invoiceDueDate,
+    };
+  };
+
   const createClient = async (clientData: ClientFormData) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      const payload = normalizeClientPayload(clientData);
       const { data, error: insertError } = await supabase
         .from('clients')
         .insert({
@@ -103,6 +152,11 @@ export function useClients() {
           website: clientData.website || null,
           notes: clientData.notes || null,
           source: clientData.source || null,
+          pipeline_stage: payload.pipeline_stage || 'Inquiry',
+          next_follow_up: payload.next_follow_up ?? null,
+          deal_value: payload.deal_value ?? null,
+          invoice_status: payload.invoice_status || 'Unpaid',
+          invoice_due_date: payload.invoice_due_date ?? null,
         })
         .select()
         .single();
@@ -120,10 +174,11 @@ export function useClients() {
 
   const updateClient = async (id: string, clientData: Partial<ClientFormData>) => {
     try {
+      const payload = normalizeClientPayload(clientData);
       const { error: updateError } = await supabase
         .from('clients')
         .update({
-          ...clientData,
+          ...payload,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id);
@@ -182,6 +237,57 @@ export function useClients() {
     }
   };
 
+  const bulkCreateClients = async (
+    rows: Array<Partial<ClientFormData> & { name: string }>
+  ) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const toInsert = rows
+        .filter((row) => row.name && row.name.trim())
+        .map((row) => {
+          const payload = normalizeClientPayload(row);
+          return {
+            user_id: user.id,
+            name: row.name.trim(),
+            email: row.email ? String(row.email) : null,
+            phone: row.phone ? String(row.phone) : null,
+            address: row.address ? String(row.address) : null,
+            company: row.company ? String(row.company) : null,
+            status: row.status || 'Active',
+            client_type: (row.client_type as ClientType) || 'Lead',
+            website: row.website ? String(row.website) : null,
+            notes: row.notes ? String(row.notes) : null,
+            source: row.source ? String(row.source) : null,
+            pipeline_stage: (payload.pipeline_stage as PipelineStage) || 'Inquiry',
+            next_follow_up: payload.next_follow_up ?? null,
+            deal_value: payload.deal_value ?? null,
+            invoice_status: (payload.invoice_status as InvoiceStatus) || 'Unpaid',
+            invoice_due_date: payload.invoice_due_date ?? null,
+          };
+        });
+
+      if (toInsert.length === 0) {
+        toast.error('No valid rows to import');
+        return { success: false as const };
+      }
+
+      const { error: insertError } = await supabase
+        .from('clients')
+        .insert(toInsert);
+
+      if (insertError) throw insertError;
+
+      await fetchClients();
+      toast.success(`Imported ${toInsert.length} clients`);
+      return { success: true as const, count: toInsert.length };
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to import clients');
+      return { success: false as const, error: err.message as string };
+    }
+  };
+
   return {
     clients,
     loading,
@@ -192,6 +298,7 @@ export function useClients() {
     deleteClient,
     toggleStatus,
     updateLastContact,
+    bulkCreateClients,
   };
 }
 

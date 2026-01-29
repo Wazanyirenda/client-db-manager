@@ -63,6 +63,15 @@ export function ClientDetailsModal({
     }
   };
 
+  const formatDateOnly = (dateStr: string | null) => {
+    if (!dateStr) return 'Not set';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -81,6 +90,38 @@ export function ClientDetailsModal({
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
+          {/* Workflow */} 
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Tag className="h-4 w-4" />
+              Workflow
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4">
+              <div>
+                <p className="text-xs text-gray-500">Pipeline Stage</p>
+                <p className="text-sm text-gray-900">{client.pipeline_stage || 'Inquiry'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Next Follow-up</p>
+                <p className="text-sm text-gray-900">{formatDate(client.next_follow_up)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Deal Value</p>
+                <p className="text-sm text-gray-900">{client.deal_value ?? '—'}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4 mt-3">
+              <div>
+                <p className="text-xs text-gray-500">Invoice Status</p>
+                <p className="text-sm text-gray-900">{client.invoice_status || 'Unpaid'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Invoice Due Date</p>
+                <p className="text-sm text-gray-900">{formatDateOnly(client.invoice_due_date)}</p>
+              </div>
+            </div>
+          </div>
+
           {/* Contact Information */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">

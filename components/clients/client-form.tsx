@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ClientFormData, ClientType } from '@/lib/hooks/use-clients';
+import { ClientFormData, ClientType, InvoiceStatus, PipelineStage } from '@/lib/hooks/use-clients';
 
 interface ClientFormProps {
   initialData?: Partial<ClientFormData>;
@@ -36,6 +36,11 @@ export function ClientForm({
     website: initialData?.website || '',
     notes: initialData?.notes || '',
     source: initialData?.source || '',
+    pipeline_stage: initialData?.pipeline_stage || 'Inquiry',
+    next_follow_up: initialData?.next_follow_up || '',
+    deal_value: initialData?.deal_value?.toString() || '',
+    invoice_status: initialData?.invoice_status || 'Unpaid',
+    invoice_due_date: initialData?.invoice_due_date || '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -52,6 +57,11 @@ export function ClientForm({
         website: initialData.website || '',
         notes: initialData.notes || '',
         source: initialData.source || '',
+        pipeline_stage: initialData.pipeline_stage || 'Inquiry',
+        next_follow_up: initialData.next_follow_up || '',
+        deal_value: initialData.deal_value?.toString() || '',
+        invoice_status: initialData.invoice_status || 'Unpaid',
+        invoice_due_date: initialData.invoice_due_date || '',
       });
     }
   }, [initialData]);
@@ -76,6 +86,11 @@ export function ClientForm({
         website: '',
         notes: '',
         source: '',
+        pipeline_stage: 'Inquiry',
+        next_follow_up: '',
+        deal_value: '',
+        invoice_status: 'Unpaid',
+        invoice_due_date: '',
       });
     }
   };
@@ -185,6 +200,90 @@ export function ClientForm({
               <SelectItem value="Inactive">Inactive</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Pipeline + Follow-up */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Pipeline Stage
+          </label>
+          <Select
+            value={formData.pipeline_stage}
+            onValueChange={(value: PipelineStage) =>
+              setFormData({ ...formData, pipeline_stage: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Inquiry">Inquiry</SelectItem>
+              <SelectItem value="Contacted">Contacted</SelectItem>
+              <SelectItem value="Proposal">Proposal</SelectItem>
+              <SelectItem value="Won">Won</SelectItem>
+              <SelectItem value="Lost">Lost</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Next Follow-up
+          </label>
+          <Input
+            type="datetime-local"
+            value={formData.next_follow_up}
+            onChange={(e) =>
+              setFormData({ ...formData, next_follow_up: e.target.value })
+            }
+          />
+        </div>
+
+        {/* Invoice Tracking */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Deal Value
+          </label>
+          <Input
+            type="number"
+            inputMode="decimal"
+            value={formData.deal_value}
+            onChange={(e) =>
+              setFormData({ ...formData, deal_value: e.target.value })
+            }
+            placeholder="0"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Invoice Status
+          </label>
+          <Select
+            value={formData.invoice_status}
+            onValueChange={(value: InvoiceStatus) =>
+              setFormData({ ...formData, invoice_status: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Unpaid">Unpaid</SelectItem>
+              <SelectItem value="Paid">Paid</SelectItem>
+              <SelectItem value="Overdue">Overdue</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Invoice Due Date
+          </label>
+          <Input
+            type="date"
+            value={formData.invoice_due_date}
+            onChange={(e) =>
+              setFormData({ ...formData, invoice_due_date: e.target.value })
+            }
+          />
         </div>
 
         {/* Address - Full Width */}

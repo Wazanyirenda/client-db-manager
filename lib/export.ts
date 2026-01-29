@@ -15,12 +15,35 @@ export interface Client {
   notes: string | null;
   source: string | null;
   last_contact: string | null;
+  pipeline_stage: string | null;
+  next_follow_up: string | null;
+  deal_value: number | null;
+  invoice_status: string | null;
+  invoice_due_date: string | null;
   created_at: string;
   updated_at: string;
 }
 
 export function exportToCSV(clients: Client[]) {
-  const headers = ['Name', 'Email', 'Phone', 'Company', 'Website', 'Address', 'Type', 'Status', 'Source', 'Notes', 'Last Contact', 'Created At'];
+  const headers = [
+    'Name',
+    'Email',
+    'Phone',
+    'Company',
+    'Website',
+    'Address',
+    'Type',
+    'Status',
+    'Stage',
+    'Next Follow-up',
+    'Deal Value',
+    'Invoice Status',
+    'Invoice Due Date',
+    'Source',
+    'Notes',
+    'Last Contact',
+    'Created At',
+  ];
   const rows = clients.map(client => [
     client.name,
     client.email || '',
@@ -30,6 +53,11 @@ export function exportToCSV(clients: Client[]) {
     client.address || '',
     client.client_type || 'Lead',
     client.status || 'Active',
+    client.pipeline_stage || 'Inquiry',
+    client.next_follow_up ? new Date(client.next_follow_up).toLocaleString() : '',
+    client.deal_value ?? '',
+    client.invoice_status || 'Unpaid',
+    client.invoice_due_date || '',
     client.source || '',
     client.notes || '',
     client.last_contact ? new Date(client.last_contact).toLocaleDateString() : '',
@@ -53,7 +81,25 @@ export function exportToCSV(clients: Client[]) {
 }
 
 export function exportToExcel(clients: Client[]) {
-  const headers = ['Name', 'Email', 'Phone', 'Company', 'Website', 'Address', 'Type', 'Status', 'Source', 'Notes', 'Last Contact', 'Created At'];
+  const headers = [
+    'Name',
+    'Email',
+    'Phone',
+    'Company',
+    'Website',
+    'Address',
+    'Type',
+    'Status',
+    'Stage',
+    'Next Follow-up',
+    'Deal Value',
+    'Invoice Status',
+    'Invoice Due Date',
+    'Source',
+    'Notes',
+    'Last Contact',
+    'Created At',
+  ];
   const rows = clients.map(client => [
     client.name,
     client.email || '',
@@ -63,6 +109,11 @@ export function exportToExcel(clients: Client[]) {
     client.address || '',
     client.client_type || 'Lead',
     client.status || 'Active',
+    client.pipeline_stage || 'Inquiry',
+    client.next_follow_up ? new Date(client.next_follow_up).toLocaleString() : '',
+    client.deal_value ?? '',
+    client.invoice_status || 'Unpaid',
+    client.invoice_due_date || '',
     client.source || '',
     client.notes || '',
     client.last_contact ? new Date(client.last_contact).toLocaleDateString() : '',
@@ -81,6 +132,11 @@ export function exportToExcel(clients: Client[]) {
     { wch: 30 }, // Address
     { wch: 10 }, // Type
     { wch: 10 }, // Status
+    { wch: 12 }, // Stage
+    { wch: 22 }, // Next Follow-up
+    { wch: 12 }, // Deal Value
+    { wch: 14 }, // Invoice Status
+    { wch: 14 }, // Invoice Due Date
     { wch: 15 }, // Source
     { wch: 40 }, // Notes
     { wch: 12 }, // Last Contact
@@ -104,7 +160,7 @@ export function exportToPDF(clients: Client[]) {
 
   // @ts-ignore - jspdf-autotable extends jsPDF
   doc.autoTable({
-    head: [['Name', 'Email', 'Phone', 'Company', 'Type', 'Status', 'Source']],
+    head: [['Name', 'Email', 'Phone', 'Company', 'Type', 'Status', 'Stage', 'Invoice', 'Source']],
     body: clients.map(client => [
       client.name,
       client.email || '-',
@@ -112,6 +168,8 @@ export function exportToPDF(clients: Client[]) {
       client.company || '-',
       client.client_type || 'Lead',
       client.status || 'Active',
+      client.pipeline_stage || 'Inquiry',
+      client.invoice_status || 'Unpaid',
       client.source || '-',
     ]),
     startY: 35,

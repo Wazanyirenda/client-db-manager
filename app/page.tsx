@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { useClients, useProfile, Client, ClientType } from '@/lib/hooks/use-clients';
+import { useTasks } from '@/lib/hooks/use-tasks';
 import { exportToCSV, exportToExcel, exportToPDF } from '@/lib/export';
 import { StatsCards } from '@/components/dashboard/stats-cards';
+import { QuickSummary } from '@/components/dashboard/quick-summary';
+import { UserAvatar } from '@/components/dashboard/user-avatar';
 import { ClientForm } from '@/components/clients/client-form';
 import { ClientDialog } from '@/components/clients/client-dialog';
 import { ClientDetailsModal } from '@/components/clients/client-details-modal';
@@ -35,7 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Edit, Trash2, Download, Search, LogOut, Plus, Eye, User } from 'lucide-react';
+import { Edit, Trash2, Download, Search, LogOut, Plus, Eye } from 'lucide-react';
 
 type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'created_at';
 type SortDirection = 'asc' | 'desc';
@@ -50,8 +53,10 @@ export default function Home() {
     deleteClient,
     toggleStatus,
     updateLastContact,
+    bulkCreateClients,
   } = useClients();
   const { profile } = useProfile();
+  const { tasks, loading: tasksLoading, createTask, setTaskCompleted, deleteTask } = useTasks();
 
   // Check authentication
   useEffect(() => {
@@ -76,6 +81,14 @@ export default function Home() {
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+
+  // Today view: tasks + follow-ups
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskClientId, setNewTaskClientId] = useState<string>('none');
+  const [newTaskDueAt, setNewTaskDueAt] = useState('');
+
+  // CSV import
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Filter and sort clients
   const filteredAndSortedClients = useMemo(() => {
@@ -169,6 +182,86 @@ export default function Home() {
     }
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good morning';
+    if (hour >= 12 && hour < 17) return 'Good afternoon';
+    if (hour >= 17 && hour < 21) return 'Good evening';
+    return 'Good night';
+  };
+
+  const parseCSV = (csvText: string) => {
+    const lines = csvText
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    if (lines.length < 2) return [];
+
+    const splitRow = (row: string) => {
+      const out: string[] = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < row.length; i += 1) {
+        const ch = row[i];
+        if (ch === '"' && row[i + 1] === '"') {
+          cur += '"';
+          i += 1;
+          continue;
+        }
+        if (ch === '"') {
+          inQuotes = !inQuotes;
+          continue;
+        }
+        if (ch === ',' && !inQuotes) {
+          out.push(cur.trim());
+          cur = '';
+          continue;
+        }
+        cur += ch;
+      }
+      out.push(cur.trim());
+      return out;
+    };
+
+    const headers = splitRow(lines[0]).map((h) => h.toLowerCase().trim());
+    const rows = lines.slice(1).map((line) => {
+      const cols = splitRow(line);
+      const obj: Record<string, string> = {};
+      headers.forEach((h, idx) => {
+        obj[h] = cols[idx] ?? '';
+      });
+      return obj;
+    });
+    return rows;
+  };
+
+  const handleImportCSV = async (file: File) => {
+    const text = await file.text();
+    const rows = parseCSV(text);
+    // Expected headers (case-insensitive): name, email, phone, company, website, address, source, notes, status, client_type, pipeline_stage, next_follow_up, deal_value, invoice_status, invoice_due_date
+    const mapped = rows
+      .filter((r) => (r['name'] || '').trim())
+      .map((r) => ({
+        name: (r['name'] || '').trim(),
+        email: r['email'] || '',
+        phone: r['phone'] || '',
+        company: r['company'] || '',
+        website: r['website'] || '',
+        address: r['address'] || '',
+        source: r['source'] || '',
+        notes: r['notes'] || '',
+        status: r['status'] || 'Active',
+        client_type: (r['client_type'] || r['type'] || 'Lead') as any,
+        pipeline_stage: (r['pipeline_stage'] || r['stage'] || 'Inquiry') as any,
+        next_follow_up: r['next_follow_up'] || '',
+        deal_value: r['deal_value'] || '',
+        invoice_status: (r['invoice_status'] || 'Unpaid') as any,
+        invoice_due_date: r['invoice_due_date'] || '',
+      }));
+
+    await bulkCreateClients(mapped);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -186,19 +279,18 @@ export default function Home() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Client Database
-              </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                {profile?.company_name ? (
-                  <>Welcome, {profile.full_name || 'User'} - {profile.company_name}</>
-                ) : profile?.full_name ? (
-                  <>Welcome, {profile.full_name}</>
-                ) : (
-                  'Manage your client information and relationships'
-                )}
-              </p>
+            <div className="flex items-center gap-3">
+              <UserAvatar name={profile?.full_name} size={44} />
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">
+                  {getGreeting()}, {profile?.full_name || 'there'}!
+                </h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  {profile?.company_name || profile?.industry
+                    ? [profile?.company_name, profile?.industry].filter(Boolean).join(' - ')
+                    : 'Manage your client information and relationships'}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -208,6 +300,19 @@ export default function Home() {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Client
               </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  await handleImportCSV(file);
+                  // reset so re-selecting same file triggers change
+                  e.currentTarget.value = '';
+                }}
+              />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
@@ -216,6 +321,12 @@ export default function Home() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-md shadow-lg p-1 min-w-[120px]">
+                  <DropdownMenuItem
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded text-gray-700"
+                  >
+                    Import CSV
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleExport('csv')}
                     className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded text-gray-700"
@@ -246,6 +357,156 @@ export default function Home() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Today */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Today</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Tasks due and clients needing follow-up
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+            {/* Tasks */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Tasks</h3>
+              <div className="flex flex-col md:flex-row gap-2 mb-3">
+                <Input
+                  placeholder="New task..."
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
+                />
+                <Select value={newTaskClientId} onValueChange={setNewTaskClientId}>
+                  <SelectTrigger className="md:w-[220px]">
+                    <SelectValue placeholder="Link to client (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No client</SelectItem>
+                    {clients.slice(0, 100).map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  type="datetime-local"
+                  value={newTaskDueAt}
+                  onChange={(e) => setNewTaskDueAt(e.target.value)}
+                  className="md:w-[220px]"
+                />
+                <Button
+                  onClick={async () => {
+                    if (!newTaskTitle.trim()) return;
+                    await createTask({
+                      title: newTaskTitle.trim(),
+                      client_id: newTaskClientId === 'none' ? null : newTaskClientId,
+                      due_at: newTaskDueAt || undefined,
+                    });
+                    setNewTaskTitle('');
+                    setNewTaskClientId('none');
+                    setNewTaskDueAt('');
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {tasksLoading ? (
+                  <p className="text-sm text-gray-500">Loading tasks...</p>
+                ) : tasks.length === 0 ? (
+                  <p className="text-sm text-gray-500">No tasks yet.</p>
+                ) : (
+                  tasks.slice(0, 8).map((t) => (
+                    <div key={t.id} className="flex items-center justify-between gap-3 border border-gray-200 rounded-lg px-3 py-2">
+                      <div className="flex items-start gap-2">
+                        <input
+                          type="checkbox"
+                          checked={t.completed}
+                          onChange={async (e) => setTaskCompleted(t.id, e.target.checked)}
+                          className="mt-1"
+                        />
+                        <div>
+                          <div className={`text-sm ${t.completed ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                            {t.title}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {t.client?.name ? `${t.client.name} • ` : ''}
+                            {t.due_at ? new Date(t.due_at).toLocaleString() : 'No due date'}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                        onClick={async () => deleteTask(t.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Follow-ups */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Follow-ups due</h3>
+              {(() => {
+                const now = new Date();
+                const due = clients
+                  .filter((c) => c.next_follow_up)
+                  .filter((c) => new Date(c.next_follow_up as string) <= now)
+                  .filter((c) => !['Won', 'Lost'].includes(c.pipeline_stage || ''))
+                  .sort((a, b) => new Date(a.next_follow_up as string).getTime() - new Date(b.next_follow_up as string).getTime())
+                  .slice(0, 8);
+
+                if (due.length === 0) {
+                  return <p className="text-sm text-gray-500">No follow-ups due.</p>;
+                }
+
+                return (
+                  <div className="space-y-2">
+                    {due.map((c) => (
+                      <div
+                        key={c.id}
+                        className="flex items-center justify-between gap-3 border border-gray-200 rounded-lg px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <div className="text-sm text-gray-900 truncate">{c.name}</div>
+                          <div className="text-xs text-gray-500">
+                            {c.pipeline_stage || 'Inquiry'} • Follow-up: {c.next_follow_up ? new Date(c.next_follow_up).toLocaleString() : '—'}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => setViewingClient(c)}>
+                            View
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={async () => {
+                              await updateLastContact(c.id);
+                            }}
+                          >
+                            Log contact
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Summary */}
+        <QuickSummary clients={clients} />
+
         {/* Stats Cards */}
         <StatsCards clients={clients} />
 
@@ -525,6 +786,11 @@ export default function Home() {
             website: editingClient.website || '',
             notes: editingClient.notes || '',
             source: editingClient.source || '',
+            pipeline_stage: editingClient.pipeline_stage || 'Inquiry',
+            next_follow_up: editingClient.next_follow_up || '',
+            deal_value: editingClient.deal_value?.toString() || '',
+            invoice_status: editingClient.invoice_status || 'Unpaid',
+            invoice_due_date: editingClient.invoice_due_date || '',
           }}
           onSubmit={async (data) => {
             await updateClient(editingClient.id, data);

@@ -5,6 +5,13 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Link from "next/link";
 import { Eye, EyeOff, Check, X } from "lucide-react";
 
@@ -36,6 +43,11 @@ export function SignupForm() {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [website, setWebsite] = useState("");
+  const [role, setRole] = useState("");
+  const [companySize, setCompanySize] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -59,8 +71,8 @@ export function SignupForm() {
   }, [router]);
 
   // Real-time password validation
-  const passwordsMatch = password && confirmPassword && password === confirmPassword;
-  const passwordsDontMatch = confirmPassword && password !== confirmPassword;
+  const passwordsMatch = Boolean(password) && Boolean(confirmPassword) && password === confirmPassword;
+  const passwordsDontMatch = Boolean(confirmPassword) && password !== confirmPassword;
   const passwordLongEnough = password.length >= 6;
 
   const handleGoogleSignUp = async () => {
@@ -113,6 +125,11 @@ export function SignupForm() {
         data: {
           full_name: fullName,
           company_name: companyName,
+          phone,
+          industry,
+          website,
+          role,
+          company_size: companySize,
         },
       },
     });
@@ -154,7 +171,7 @@ export function SignupForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-gray-700" htmlFor="fullName">
               Full Name <span className="text-red-500">*</span>
@@ -181,6 +198,83 @@ export function SignupForm() {
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="Acme Inc. (optional)"
             />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700" htmlFor="phone">
+              Phone
+            </label>
+            <Input
+              id="phone"
+              type="tel"
+              autoComplete="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+1 555-0123"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700" htmlFor="website">
+              Website
+            </label>
+            <Input
+              id="website"
+              type="url"
+              autoComplete="url"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="https://acme.com"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">
+              Industry
+            </label>
+            <Select value={industry || undefined} onValueChange={setIndustry}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select industry" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Healthcare">Healthcare</SelectItem>
+                <SelectItem value="Retail">Retail</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Real Estate">Real Estate</SelectItem>
+                <SelectItem value="Consulting">Consulting</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">
+              Role / Position
+            </label>
+            <Select value={role || undefined} onValueChange={setRole}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Owner">Owner</SelectItem>
+                <SelectItem value="Manager">Manager</SelectItem>
+                <SelectItem value="Sales Rep">Sales Rep</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <label className="text-sm font-medium text-gray-700">
+              Company Size
+            </label>
+            <Select value={companySize || undefined} onValueChange={setCompanySize}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select company size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1-10">1-10</SelectItem>
+                <SelectItem value="11-50">11-50</SelectItem>
+                <SelectItem value="51-200">51-200</SelectItem>
+                <SelectItem value="200+">200+</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
