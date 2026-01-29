@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Shield } from "lucide-react";
 
 export default function SecuritySettingsPage() {
   const supabase = createSupabaseBrowserClient();
@@ -36,7 +37,10 @@ export default function SecuritySettingsPage() {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Security</h2>
+      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+        <Shield className="h-4 w-4 text-blue-600" />
+        Security
+      </h2>
       <p className="text-sm text-gray-600 mt-1">
         Update your password and security settings.
       </p>

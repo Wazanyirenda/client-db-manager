@@ -5,6 +5,7 @@ import { useProfile } from "@/lib/hooks/use-clients";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { User } from "lucide-react";
 
 export default function ProfileSettingsPage() {
   const { profile, updateProfile } = useProfile();
@@ -44,7 +45,10 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Profile</h2>
+      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+        <User className="h-4 w-4 text-blue-600" />
+        Profile
+      </h2>
       <p className="text-sm text-gray-600 mt-1">
         Update your personal and business information.
       </p>

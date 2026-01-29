@@ -38,7 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Edit, Trash2, Download, Search, LogOut, Plus, Eye, Settings } from 'lucide-react';
+import { Edit, Trash2, Download, Search, LogOut, Plus, Eye, Settings, Users, CalendarCheck2, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'created_at';
 type SortDirection = 'asc' | 'desc';
@@ -283,7 +283,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -376,11 +376,11 @@ export default function Home() {
         <div className="flex gap-6">
           {/* Sidebar */}
           <aside
-            className={`bg-white border border-gray-200 rounded-lg p-4 h-fit ${sidebarCollapsed ? 'w-16' : 'w-56'}`}
+            className={`bg-white border border-gray-200 rounded-lg p-4 h-fit shadow-sm ${sidebarCollapsed ? 'w-16' : 'w-60'}`}
           >
             <div className="flex items-center justify-between mb-4">
               {!sidebarCollapsed && (
-                <span className="text-sm font-semibold text-gray-700">Navigation</span>
+                <span className="text-sm font-semibold text-gray-700">Workspace</span>
               )}
               <Button
                 variant="ghost"
@@ -389,30 +389,45 @@ export default function Home() {
                 className="h-8 w-8 p-0"
                 title={sidebarCollapsed ? 'Expand' : 'Collapse'}
               >
-                {sidebarCollapsed ? '›' : '‹'}
+                {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </Button>
             </div>
             <div className="flex flex-col gap-2">
               <Button
-                variant={activeTab === 'clients' ? 'default' : 'outline'}
+                variant="outline"
                 onClick={() => setActiveTab('clients')}
-                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+                className={`${
+                  activeTab === 'clients'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                    : 'text-gray-700'
+                } ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start gap-2'}`}
               >
-                {sidebarCollapsed ? 'C' : 'Clients'}
+                <Users className="h-4 w-4" />
+                {!sidebarCollapsed && 'Clients'}
               </Button>
               <Button
-                variant={activeTab === 'today' ? 'default' : 'outline'}
+                variant="outline"
                 onClick={() => setActiveTab('today')}
-                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+                className={`${
+                  activeTab === 'today'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                    : 'text-gray-700'
+                } ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start gap-2'}`}
               >
-                {sidebarCollapsed ? 'T' : 'Today'}
+                <CalendarCheck2 className="h-4 w-4" />
+                {!sidebarCollapsed && 'Today'}
               </Button>
               <Button
-                variant={activeTab === 'insights' ? 'default' : 'outline'}
+                variant="outline"
                 onClick={() => setActiveTab('insights')}
-                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+                className={`${
+                  activeTab === 'insights'
+                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                    : 'text-gray-700'
+                } ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start gap-2'}`}
               >
-                {sidebarCollapsed ? 'I' : 'Insights'}
+                <BarChart3 className="h-4 w-4" />
+                {!sidebarCollapsed && 'Insights'}
               </Button>
             </div>
           </aside>
@@ -421,7 +436,7 @@ export default function Home() {
           <div className="flex-1">
             {/* Today */}
             {activeTab === 'today' && (
-              <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200 border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Today</h2>

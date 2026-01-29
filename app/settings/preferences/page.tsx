@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sliders } from "lucide-react";
 
 const DASHBOARD_TAB_KEY = "dashboard_default_tab";
 
@@ -22,7 +23,10 @@ export default function PreferencesSettingsPage() {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-lg font-semibold text-gray-900">Preferences</h2>
+      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+        <Sliders className="h-4 w-4 text-blue-600" />
+        Preferences
+      </h2>
       <p className="text-sm text-gray-600 mt-1">
         Customize how your dashboard behaves.
       </p>
