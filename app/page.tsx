@@ -82,6 +82,7 @@ export default function Home() {
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'clients' | 'today' | 'insights'>('clients');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Today view: tasks + follow-ups
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -372,31 +373,55 @@ export default function Home() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          <Button
-            variant={activeTab === 'clients' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('clients')}
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          <aside
+            className={`bg-white border border-gray-200 rounded-lg p-4 h-fit ${sidebarCollapsed ? 'w-16' : 'w-56'}`}
           >
-            Clients
-          </Button>
-          <Button
-            variant={activeTab === 'today' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('today')}
-          >
-            Today
-          </Button>
-          <Button
-            variant={activeTab === 'insights' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('insights')}
-          >
-            Insights
-          </Button>
-        </div>
+            <div className="flex items-center justify-between mb-4">
+              {!sidebarCollapsed && (
+                <span className="text-sm font-semibold text-gray-700">Navigation</span>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarCollapsed((v) => !v)}
+                className="h-8 w-8 p-0"
+                title={sidebarCollapsed ? 'Expand' : 'Collapse'}
+              >
+                {sidebarCollapsed ? '›' : '‹'}
+              </Button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button
+                variant={activeTab === 'clients' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('clients')}
+                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+              >
+                {sidebarCollapsed ? 'C' : 'Clients'}
+              </Button>
+              <Button
+                variant={activeTab === 'today' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('today')}
+                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+              >
+                {sidebarCollapsed ? 'T' : 'Today'}
+              </Button>
+              <Button
+                variant={activeTab === 'insights' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('insights')}
+                className={sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}
+              >
+                {sidebarCollapsed ? 'I' : 'Insights'}
+              </Button>
+            </div>
+          </aside>
 
-        {/* Today */}
-        {activeTab === 'today' && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
+          {/* Main */}
+          <div className="flex-1">
+            {/* Today */}
+            {activeTab === 'today' && (
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Today</h2>
@@ -540,96 +565,96 @@ export default function Home() {
               })()}
             </div>
           </div>
-          </div>
-        )}
+              </div>
+            )}
 
-        {/* Insights */}
-        {activeTab === 'insights' && (
-          <>
-            <QuickSummary clients={clients} />
-            <StatsCards clients={clients} />
-          </>
-        )}
+            {/* Insights */}
+            {activeTab === 'insights' && (
+              <>
+                <QuickSummary clients={clients} />
+                <StatsCards clients={clients} />
+              </>
+            )}
 
-        {/* Add Client Form */}
-        {activeTab === 'clients' && showAddForm && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Add New Client
-            </h2>
-            <ClientForm
-              onSubmit={async (data) => {
-                await createClient(data);
-                setShowAddForm(false);
-              }}
-              onCancel={() => setShowAddForm(false)}
-            />
-          </div>
-        )}
-
-        {/* Search and Filters */}
-        {activeTab === 'clients' && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search clients..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
+            {/* Add Client Form */}
+            {activeTab === 'clients' && showAddForm && (
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Add New Client
+                </h2>
+                <ClientForm
+                  onSubmit={async (data) => {
+                    await createClient(data);
+                    setShowAddForm(false);
                   }}
-                  className="pl-10"
+                  onCancel={() => setShowAddForm(false)}
                 />
               </div>
-              <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={typeFilter} onValueChange={(value) => { setTypeFilter(value); setCurrentPage(1); }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Lead">Leads</SelectItem>
-                  <SelectItem value="Data">Data</SelectItem>
-                  <SelectItem value="Paying">Paying Clients</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select
-                value={pageSize.toString()}
-                onValueChange={(value: string) => {
-                  setPageSize(Number(value));
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10 per page</SelectItem>
-                  <SelectItem value="25">25 per page</SelectItem>
-                  <SelectItem value="50">50 per page</SelectItem>
-                  <SelectItem value="100">100 per page</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* Clients Table */}
-        {activeTab === 'clients' && (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+            {/* Search and Filters */}
+            {activeTab === 'clients' && (
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search clients..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={typeFilter} onValueChange={(value) => { setTypeFilter(value); setCurrentPage(1); }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="Lead">Leads</SelectItem>
+                      <SelectItem value="Data">Data</SelectItem>
+                      <SelectItem value="Paying">Paying Clients</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={pageSize.toString()}
+                    onValueChange={(value: string) => {
+                      setPageSize(Number(value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="10">10 per page</SelectItem>
+                      <SelectItem value="25">25 per page</SelectItem>
+                      <SelectItem value="50">50 per page</SelectItem>
+                      <SelectItem value="100">100 per page</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {/* Clients Table */}
+            {activeTab === 'clients' && (
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+              <div className="overflow-x-auto">
+                <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -745,8 +770,8 @@ export default function Home() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                {totalPages > 1 && (
+                  <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-700">
                 Showing {(currentPage - 1) * pageSize + 1} to{' '}
                 {Math.min(currentPage * pageSize, filteredAndSortedClients.length)} of{' '}
@@ -795,10 +820,12 @@ export default function Home() {
                   Next
                 </Button>
               </div>
-            </div>
-          )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Client Details Modal */}
