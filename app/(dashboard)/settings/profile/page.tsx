@@ -44,31 +44,31 @@ export default function ProfileSettingsPage() {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-        <User className="h-4 w-4 text-blue-600" />
-        Profile
+        <User className="h-5 w-5 text-blue-600" />
+        Profile Information
       </h2>
       <p className="text-sm text-gray-600 mt-1">
         Update your personal and business information.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700">Full Name</label>
-          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700">Company / Business</label>
-          <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
+          <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Acme Inc." />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700">Phone</label>
-          <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 (555) 123-4567" />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700">Website</label>
-          <Input value={website} onChange={(e) => setWebsite(e.target.value)} />
+          <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://example.com" />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-gray-700">Industry</label>
@@ -97,6 +97,7 @@ export default function ProfileSettingsPage() {
               <SelectItem value="Owner">Owner</SelectItem>
               <SelectItem value="Manager">Manager</SelectItem>
               <SelectItem value="Sales Rep">Sales Rep</SelectItem>
+              <SelectItem value="Freelancer">Freelancer</SelectItem>
               <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
@@ -108,7 +109,8 @@ export default function ProfileSettingsPage() {
               <SelectValue placeholder="Select company size" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1-10">1-10</SelectItem>
+              <SelectItem value="Just me">Just me</SelectItem>
+              <SelectItem value="2-10">2-10</SelectItem>
               <SelectItem value="11-50">11-50</SelectItem>
               <SelectItem value="51-200">51-200</SelectItem>
               <SelectItem value="200+">200+</SelectItem>
