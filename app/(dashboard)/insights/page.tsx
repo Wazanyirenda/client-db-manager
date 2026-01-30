@@ -7,17 +7,17 @@ import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickSummary } from '@/components/dashboard/quick-summary';
 import { Badge } from '@/components/ui/badge';
 import {
-  BarChart3,
+  ChartBar,
   Users,
-  DollarSign,
+  CurrencyDollar,
   TrendingUp,
   TrendingDown,
   Clock,
-  CheckCircle2,
-  AlertCircle,
+  CheckCircle,
+  Warning,
   Calendar,
   Target,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 export default function InsightsPage() {
   const { clients, loading: clientsLoading } = useClients();
@@ -144,7 +144,7 @@ export default function InsightsPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <BarChart3 className="h-7 w-7 text-blue-600" />
+          <ChartBar className="h-7 w-7 text-blue-600" weight="fill" />
           Insights
         </h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -163,7 +163,7 @@ export default function InsightsPage() {
         {/* Client Breakdown */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Users className="h-5 w-5 text-blue-600" />
+            <Users className="h-5 w-5 text-blue-600" weight="fill" />
             Client Breakdown
           </h3>
           <div className="space-y-3">
@@ -198,7 +198,7 @@ export default function InsightsPage() {
         {/* Revenue */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-emerald-600" />
+            <CurrencyDollar className="h-5 w-5 text-emerald-600" weight="fill" />
             Revenue
           </h3>
           <div className="space-y-3">
@@ -210,7 +210,7 @@ export default function InsightsPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <TrendingUp className="h-4 w-4 text-emerald-500" weight="bold" />
                 Won Deals
               </span>
               <span className="font-semibold text-emerald-600">
@@ -219,7 +219,7 @@ export default function InsightsPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <TrendingDown className="h-4 w-4 text-red-500" />
+                <TrendingDown className="h-4 w-4 text-red-500" weight="bold" />
                 Lost Deals
               </span>
               <span className="font-semibold text-red-600">
@@ -245,7 +245,7 @@ export default function InsightsPage() {
         {/* Pipeline */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-blue-600" />
+            <Target className="h-5 w-5 text-blue-600" weight="fill" />
             Pipeline
           </h3>
           <div className="space-y-3">
@@ -275,20 +275,20 @@ export default function InsightsPage() {
         {/* Follow-ups */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-amber-600" />
+            <Calendar className="h-5 w-5 text-amber-600" weight="fill" />
             Follow-ups
           </h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <AlertCircle className="h-4 w-4 text-red-500" />
+                <Warning className="h-4 w-4 text-red-500" weight="fill" />
                 Overdue
               </span>
               <Badge className="bg-red-100 text-red-700">{stats.overdueFollowUps}</Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <Clock className="h-4 w-4 text-amber-500" />
+                <Clock className="h-4 w-4 text-amber-500" weight="fill" />
                 This Week
               </span>
               <Badge className="bg-amber-100 text-amber-700">{stats.upcomingFollowUps}</Badge>
@@ -303,7 +303,7 @@ export default function InsightsPage() {
         {/* Tasks */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-purple-600" />
+            <CheckCircle className="h-5 w-5 text-purple-600" weight="fill" />
             Tasks
           </h3>
           <div className="space-y-3">
@@ -329,7 +329,7 @@ export default function InsightsPage() {
         {/* Growth */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-600" />
+            <TrendingUp className="h-5 w-5 text-emerald-600" weight="fill" />
             Growth
           </h3>
           <div className="space-y-3">
@@ -345,7 +345,7 @@ export default function InsightsPage() {
               <span className="text-sm text-gray-600">Month-over-month</span>
               {stats.addedThisMonth >= stats.addedLastMonth ? (
                 <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                  <TrendingUp className="h-4 w-4" />
+                  <TrendingUp className="h-4 w-4" weight="bold" />
                   {stats.addedLastMonth > 0
                     ? `+${Math.round(((stats.addedThisMonth - stats.addedLastMonth) / stats.addedLastMonth) * 100)}%`
                     : stats.addedThisMonth > 0
@@ -354,7 +354,7 @@ export default function InsightsPage() {
                 </span>
               ) : (
                 <span className="text-red-600 font-semibold flex items-center gap-1">
-                  <TrendingDown className="h-4 w-4" />
+                  <TrendingDown className="h-4 w-4" weight="bold" />
                   {Math.round(((stats.addedLastMonth - stats.addedThisMonth) / stats.addedLastMonth) * 100)}%
                 </span>
               )}
@@ -365,4 +365,3 @@ export default function InsightsPage() {
     </div>
   );
 }
-

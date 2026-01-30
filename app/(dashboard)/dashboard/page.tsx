@@ -10,14 +10,14 @@ import {
   Users,
   UserCheck,
   CheckSquare,
-  AlertCircle,
+  Warning,
   Plus,
   ArrowRight,
   Clock,
-  DollarSign,
+  CurrencyDollar,
   TrendingUp,
   Calendar,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 export default function DashboardPage() {
   const { clients, loading: clientsLoading } = useClients();
@@ -109,13 +109,13 @@ export default function DashboardPage() {
         <div className="flex gap-2">
           <Link href="/clients">
             <Button variant="outline">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="h-4 w-4 mr-2" weight="fill" />
               View Clients
             </Button>
           </Link>
           <Link href="/clients?add=true">
             <Button>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 mr-2" weight="bold" />
               Add Client
             </Button>
           </Link>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
       {/* Alerts */}
       {(stats.overdueTasks > 0 || stats.overdueInvoices > 0) && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
-          <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+          <Warning className="h-5 w-5 text-red-500 flex-shrink-0" weight="fill" />
           <div className="text-sm text-red-700">
             {stats.overdueTasks > 0 && (
               <span>
@@ -187,17 +187,17 @@ export default function DashboardPage() {
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Recent Clients</h2>
             <Link href="/clients" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-              View all <ArrowRight className="h-3 w-3" />
+              View all <ArrowRight className="h-3 w-3" weight="bold" />
             </Link>
           </div>
           <div className="divide-y divide-gray-100">
             {recentClients.length === 0 ? (
               <div className="px-5 py-8 text-center text-gray-500">
-                <Users className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                <Users className="h-8 w-8 mx-auto mb-2 text-gray-300" weight="regular" />
                 <p>No clients yet</p>
                 <Link href="/clients?add=true">
                   <Button size="sm" className="mt-3">
-                    <Plus className="h-4 w-4 mr-1" />
+                    <Plus className="h-4 w-4 mr-1" weight="bold" />
                     Add your first client
                   </Button>
                 </Link>
@@ -244,19 +244,19 @@ export default function DashboardPage() {
             <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
               <h2 className="font-semibold text-gray-900">Today's Tasks</h2>
               <Link href="/tasks" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                View all <ArrowRight className="h-3 w-3" />
+                View all <ArrowRight className="h-3 w-3" weight="bold" />
               </Link>
             </div>
             <div className="divide-y divide-gray-100">
               {todaysTasks.length === 0 ? (
                 <div className="px-5 py-6 text-center text-gray-500">
-                  <CheckSquare className="h-6 w-6 mx-auto mb-2 text-gray-300" />
+                  <CheckSquare className="h-6 w-6 mx-auto mb-2 text-gray-300" weight="regular" />
                   <p className="text-sm">No tasks due today</p>
                 </div>
               ) : (
                 todaysTasks.map((task) => (
                   <div key={task.id} className="px-5 py-3 flex items-center gap-3">
-                    <CheckSquare className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                    <CheckSquare className="h-4 w-4 text-blue-500 flex-shrink-0" weight="fill" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900 truncate">{task.title}</p>
                       {task.client && (
@@ -274,13 +274,13 @@ export default function DashboardPage() {
             <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
               <h2 className="font-semibold text-gray-900">Upcoming Follow-ups</h2>
               <Link href="/clients" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                View all <ArrowRight className="h-3 w-3" />
+                View all <ArrowRight className="h-3 w-3" weight="bold" />
               </Link>
             </div>
             <div className="divide-y divide-gray-100">
               {upcomingFollowUps.length === 0 ? (
                 <div className="px-5 py-6 text-center text-gray-500">
-                  <Calendar className="h-6 w-6 mx-auto mb-2 text-gray-300" />
+                  <Calendar className="h-6 w-6 mx-auto mb-2 text-gray-300" weight="regular" />
                   <p className="text-sm">No follow-ups scheduled</p>
                 </div>
               ) : (
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                     href={`/clients?view=${client.id}`}
                     className="px-5 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors"
                   >
-                    <Clock className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    <Clock className="h-4 w-4 text-amber-500 flex-shrink-0" weight="fill" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900 truncate">{client.name}</p>
                       <p className="text-xs text-gray-500">
@@ -313,25 +313,25 @@ export default function DashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link href="/clients?add=true">
             <Button variant="outline">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 mr-2" weight="bold" />
               Add Client
             </Button>
           </Link>
           <Link href="/tasks">
             <Button variant="outline">
-              <CheckSquare className="h-4 w-4 mr-2" />
+              <CheckSquare className="h-4 w-4 mr-2" weight="fill" />
               Create Task
             </Button>
           </Link>
           <Link href="/pipeline">
             <Button variant="outline">
-              <TrendingUp className="h-4 w-4 mr-2" />
+              <TrendingUp className="h-4 w-4 mr-2" weight="fill" />
               View Pipeline
             </Button>
           </Link>
           <Link href="/settings/data">
             <Button variant="outline">
-              <DollarSign className="h-4 w-4 mr-2" />
+              <CurrencyDollar className="h-4 w-4 mr-2" weight="fill" />
               Export Data
             </Button>
           </Link>
@@ -384,10 +384,9 @@ function StatCard({
           )}
         </div>
         <div className={`h-12 w-12 rounded-lg ${iconBgClasses[color]} flex items-center justify-center`}>
-          <Icon className="h-6 w-6" />
+          <Icon className="h-6 w-6" weight="fill" />
         </div>
       </div>
     </div>
   );
 }
-

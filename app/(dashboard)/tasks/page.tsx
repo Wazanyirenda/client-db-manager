@@ -26,15 +26,14 @@ import {
 import {
   CheckSquare,
   Plus,
-  Trash2,
+  Trash,
   Clock,
-  AlertCircle,
-  CheckCircle2,
+  Warning,
+  CheckCircle,
   Circle,
   Calendar,
   User,
-  Filter,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 type TaskFilter = 'all' | 'pending' | 'today' | 'overdue' | 'completed';
 
@@ -109,20 +108,20 @@ export default function TasksPage() {
 
   const getTaskStatusIcon = (task: Task) => {
     if (task.completed) {
-      return <CheckCircle2 className="h-5 w-5 text-emerald-500" />;
+      return <CheckCircle className="h-5 w-5 text-emerald-500" weight="fill" />;
     }
     if (task.due_at) {
       const now = new Date();
       const due = new Date(task.due_at);
       if (due < now) {
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
+        return <Warning className="h-5 w-5 text-red-500" weight="fill" />;
       }
       const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
       if (due < todayEnd) {
-        return <Clock className="h-5 w-5 text-amber-500" />;
+        return <Clock className="h-5 w-5 text-amber-500" weight="fill" />;
       }
     }
-    return <Circle className="h-5 w-5 text-gray-400" />;
+    return <Circle className="h-5 w-5 text-gray-400" weight="regular" />;
   };
 
   const loading = tasksLoading || clientsLoading;
@@ -212,7 +211,7 @@ export default function TasksPage() {
       {/* Add Task Form */}
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Plus className="h-5 w-5 text-blue-600" />
+          <Plus className="h-5 w-5 text-blue-600" weight="bold" />
           Add New Task
         </h2>
         <div className="flex flex-col md:flex-row gap-3">
@@ -243,7 +242,7 @@ export default function TasksPage() {
             className="w-full md:w-56"
           />
           <Button onClick={handleCreateTask} disabled={!newTaskTitle.trim()}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" weight="bold" />
             Add Task
           </Button>
         </div>
@@ -253,7 +252,7 @@ export default function TasksPage() {
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
         <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-            <CheckSquare className="h-5 w-5 text-blue-600" />
+            <CheckSquare className="h-5 w-5 text-blue-600" weight="fill" />
             {filter === 'all' && 'All Tasks'}
             {filter === 'pending' && 'Pending Tasks'}
             {filter === 'today' && "Today's Tasks"}
@@ -266,7 +265,7 @@ export default function TasksPage() {
         <div className="divide-y divide-gray-100">
           {filteredTasks.length === 0 ? (
             <div className="px-5 py-12 text-center text-gray-500">
-              <CheckSquare className="h-10 w-10 mx-auto mb-3 text-gray-300" />
+              <CheckSquare className="h-10 w-10 mx-auto mb-3 text-gray-300" weight="regular" />
               <p className="font-medium">No tasks found</p>
               <p className="text-sm mt-1">
                 {filter === 'all'
@@ -298,7 +297,7 @@ export default function TasksPage() {
                   <div className="flex items-center gap-4 mt-1">
                     {task.client && (
                       <span className="text-xs text-gray-500 flex items-center gap-1">
-                        <User className="h-3 w-3" />
+                        <User className="h-3 w-3" weight="fill" />
                         {task.client.name}
                       </span>
                     )}
@@ -310,7 +309,7 @@ export default function TasksPage() {
                             : 'text-gray-500'
                         }`}
                       >
-                        <Calendar className="h-3 w-3" />
+                        <Calendar className="h-3 w-3" weight="fill" />
                         {new Date(task.due_at).toLocaleString()}
                       </span>
                     )}
@@ -323,7 +322,7 @@ export default function TasksPage() {
                   onClick={() => setDeletingTask(task)}
                   className="text-gray-400 hover:text-red-600"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash className="h-4 w-4" weight="fill" />
                 </Button>
               </div>
             ))
@@ -360,4 +359,3 @@ export default function TasksPage() {
     </div>
   );
 }
-

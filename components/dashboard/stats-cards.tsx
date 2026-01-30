@@ -1,7 +1,7 @@
 "use client";
 
 import { Client } from '@/lib/hooks/use-clients';
-import { Users, UserCheck, UserX, DollarSign, Target, Database } from 'lucide-react';
+import { Users, UserCheck, UserMinus, CurrencyDollar, Target, Database } from '@phosphor-icons/react';
 
 interface StatsCardsProps {
   clients: Client[];
@@ -35,7 +35,7 @@ export function StatsCards({ clients }: StatsCardsProps) {
     {
       label: 'Inactive',
       value: inactiveClients,
-      icon: UserX,
+      icon: UserMinus,
       color: 'text-gray-600',
       bgColor: 'bg-gray-100',
     },
@@ -56,7 +56,7 @@ export function StatsCards({ clients }: StatsCardsProps) {
     {
       label: 'Paying Clients',
       value: payingClients,
-      icon: DollarSign,
+      icon: CurrencyDollar,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-100',
     },
@@ -73,7 +73,7 @@ export function StatsCards({ clients }: StatsCardsProps) {
           >
             <div className="flex items-center gap-3">
               <div className={`${stat.bgColor} p-2 rounded-lg`}>
-                <Icon className={`h-5 w-5 ${stat.color}`} />
+                <Icon className={`h-5 w-5 ${stat.color}`} weight="fill" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">

@@ -10,17 +10,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { 
-  Mail, 
+  Envelope, 
   Phone, 
   MapPin, 
-  Building2, 
+  Buildings, 
   Globe, 
   Calendar,
   Clock,
   FileText,
   Tag,
-  ExternalLink
-} from 'lucide-react';
+  ArrowSquareOut
+} from '@phosphor-icons/react';
 
 interface ClientDetailsModalProps {
   client: Client | null;
@@ -93,7 +93,7 @@ export function ClientDetailsModal({
           {/* Workflow */} 
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Tag className="h-4 w-4" />
+              <Tag className="h-4 w-4" weight="fill" />
               Workflow
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4">
@@ -125,12 +125,12 @@ export function ClientDetailsModal({
           {/* Contact Information */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Phone className="h-4 w-4" />
+              <Phone className="h-4 w-4" weight="fill" />
               Contact Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <Mail className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Envelope className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Email</p>
                   {client.email ? (
@@ -146,7 +146,7 @@ export function ClientDetailsModal({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Phone className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Phone className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Phone</p>
                   {client.phone ? (
@@ -162,14 +162,14 @@ export function ClientDetailsModal({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <MapPin className="h-4 w-4 text-gray-400 mt-0.5" />
+                <MapPin className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Address</p>
                   <p className="text-sm text-gray-900">{client.address || 'Not provided'}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Globe className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Globe className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Website</p>
                   {client.website ? (
@@ -180,7 +180,7 @@ export function ClientDetailsModal({
                       className="text-sm text-blue-600 hover:underline flex items-center gap-1"
                     >
                       {client.website.replace(/^https?:\/\//, '')}
-                      <ExternalLink className="h-3 w-3" />
+                      <ArrowSquareOut className="h-3 w-3" weight="bold" />
                     </a>
                   ) : (
                     <p className="text-sm text-gray-400">Not provided</p>
@@ -193,19 +193,19 @@ export function ClientDetailsModal({
           {/* Company & Source */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Building2 className="h-4 w-4" />
+              <Buildings className="h-4 w-4" weight="fill" />
               Company Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <Building2 className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Buildings className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Company</p>
                   <p className="text-sm text-gray-900">{client.company || 'Not provided'}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Tag className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Tag className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Source</p>
                   <p className="text-sm text-gray-900">{client.source || 'Not provided'}</p>
@@ -218,7 +218,7 @@ export function ClientDetailsModal({
           {client.notes && (
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4" />
+                <FileText className="h-4 w-4" weight="fill" />
                 Notes
               </h3>
               <div className="bg-gray-50 rounded-lg p-4">
@@ -230,26 +230,26 @@ export function ClientDetailsModal({
           {/* Timestamps */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="h-4 w-4" weight="fill" />
               Activity
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <Calendar className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Calendar className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Created</p>
                   <p className="text-sm text-gray-900">{formatDate(client.created_at)}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Clock className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Clock className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Last Updated</p>
                   <p className="text-sm text-gray-900">{formatDate(client.updated_at)}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Phone className="h-4 w-4 text-gray-400 mt-0.5" />
+                <Phone className="h-4 w-4 text-gray-400 mt-0.5" weight="fill" />
                 <div>
                   <p className="text-xs text-gray-500">Last Contact</p>
                   <p className="text-sm text-gray-900">{formatDate(client.last_contact)}</p>
@@ -264,7 +264,7 @@ export function ClientDetailsModal({
             variant="outline" 
             onClick={() => onUpdateLastContact(client.id)}
           >
-            <Phone className="h-4 w-4 mr-2" />
+            <Phone className="h-4 w-4 mr-2" weight="fill" />
             Log Contact
           </Button>
           <div className="flex gap-2">
@@ -280,4 +280,3 @@ export function ClientDetailsModal({
     </Dialog>
   );
 }
-

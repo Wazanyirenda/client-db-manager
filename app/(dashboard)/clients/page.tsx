@@ -34,18 +34,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Edit,
-  Trash2,
-  Download,
-  Search,
+  PencilSimple,
+  Trash,
+  DownloadSimple,
+  MagnifyingGlass,
   Plus,
   Eye,
-  Upload,
-  FileSpreadsheet,
+  UploadSimple,
+  FileXls,
   FileText,
-  Filter,
+  Funnel,
   X,
-} from 'lucide-react';
+  FilePdf,
+} from '@phosphor-icons/react';
 
 type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'created_at';
 type SortDirection = 'asc' | 'desc';
@@ -290,7 +291,7 @@ export default function ClientsPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
+                <DownloadSimple className="h-4 w-4 mr-2" weight="bold" />
                 Export
               </Button>
             </DropdownMenuTrigger>
@@ -299,34 +300,34 @@ export default function ClientsPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
               >
-                <Upload className="h-4 w-4" />
+                <UploadSimple className="h-4 w-4" weight="bold" />
                 Import CSV
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleExport('csv')}
                 className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
               >
-                <FileText className="h-4 w-4" />
+                <FileText className="h-4 w-4" weight="fill" />
                 Export as CSV
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleExport('excel')}
                 className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
               >
-                <FileSpreadsheet className="h-4 w-4" />
+                <FileXls className="h-4 w-4" weight="fill" />
                 Export as Excel
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleExport('pdf')}
                 className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
               >
-                <FileText className="h-4 w-4" />
+                <FilePdf className="h-4 w-4" weight="fill" />
                 Export as PDF
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Button onClick={() => setShowAddForm(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" weight="bold" />
             Add Client
           </Button>
         </div>
@@ -348,7 +349,7 @@ export default function ClientsPage() {
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" weight="bold" />
             <Input
               placeholder="Search clients..."
               value={searchQuery}
@@ -411,14 +412,14 @@ export default function ClientsPage() {
           </Select>
           {hasActiveFilters && (
             <Button variant="ghost" onClick={clearFilters} className="gap-2">
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" weight="bold" />
               Clear
             </Button>
           )}
         </div>
         {hasActiveFilters && (
           <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
-            <Filter className="h-4 w-4" />
+            <Funnel className="h-4 w-4" weight="fill" />
             Showing {filteredAndSortedClients.length} of {clients.length} clients
           </div>
         )}
@@ -532,7 +533,7 @@ export default function ClientsPage() {
                           className="h-8 w-8 p-0"
                           title="View details"
                         >
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -541,7 +542,7 @@ export default function ClientsPage() {
                           className="h-8 w-8 p-0"
                           title="Edit client"
                         >
-                          <Edit className="h-4 w-4" />
+                          <PencilSimple className="h-4 w-4" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -550,7 +551,7 @@ export default function ClientsPage() {
                           className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
                           title="Delete client"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash className="h-4 w-4" weight="fill" />
                         </Button>
                       </div>
                     </td>
@@ -689,4 +690,3 @@ export default function ClientsPage() {
     </div>
   );
 }
-

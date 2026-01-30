@@ -6,14 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Kanban,
-  ChevronRight,
-  DollarSign,
-  Phone,
-  Mail,
-  Building2,
+  CurrencyDollar,
+  Envelope,
+  Buildings,
   Eye,
-  Edit,
-} from 'lucide-react';
+  PencilSimple,
+} from '@phosphor-icons/react';
 import { ClientDetailsModal } from '@/components/clients/client-details-modal';
 import { ClientDialog } from '@/components/clients/client-dialog';
 
@@ -110,7 +108,7 @@ export default function PipelinePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Kanban className="h-7 w-7 text-blue-600" />
+            <Kanban className="h-7 w-7 text-blue-600" weight="fill" />
             Pipeline
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -184,7 +182,7 @@ export default function PipelinePage() {
                             setViewingClient(client);
                           }}
                         >
-                          <Eye className="h-3 w-3" />
+                          <Eye className="h-3 w-3" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -195,7 +193,7 @@ export default function PipelinePage() {
                             setEditingClient(client);
                           }}
                         >
-                          <Edit className="h-3 w-3" />
+                          <PencilSimple className="h-3 w-3" weight="fill" />
                         </Button>
                       </div>
                     </div>
@@ -204,13 +202,13 @@ export default function PipelinePage() {
                     <div className="mt-2 space-y-1">
                       {client.company && (
                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                          <Building2 className="h-3 w-3" />
+                          <Buildings className="h-3 w-3" weight="fill" />
                           {client.company}
                         </div>
                       )}
                       {client.email && (
                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                          <Mail className="h-3 w-3" />
+                          <Envelope className="h-3 w-3" weight="fill" />
                           {client.email}
                         </div>
                       )}
@@ -220,7 +218,7 @@ export default function PipelinePage() {
                     {client.deal_value && (
                       <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
                         <div className="flex items-center gap-1 text-emerald-600 font-medium text-sm">
-                          <DollarSign className="h-3.5 w-3.5" />
+                          <CurrencyDollar className="h-3.5 w-3.5" weight="bold" />
                           {Number(client.deal_value).toLocaleString()}
                         </div>
                         {client.next_follow_up && new Date(client.next_follow_up) <= new Date() && (
@@ -318,4 +316,3 @@ export default function PipelinePage() {
     </div>
   );
 }
-
