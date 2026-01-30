@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Clock,
   CurrencyDollar,
-  TrendingUp,
+  TrendUp,
   Calendar,
 } from '@phosphor-icons/react';
 
@@ -134,7 +134,7 @@ export default function DashboardPage() {
         <StatCard
           title="Active Leads"
           value={stats.leads}
-          icon={TrendingUp}
+          icon={TrendUp}
           color="amber"
           subtitle="In pipeline"
         />
@@ -325,7 +325,7 @@ export default function DashboardPage() {
           </Link>
           <Link href="/pipeline">
             <Button variant="outline">
-              <TrendingUp className="h-4 w-4 mr-2" weight="fill" />
+              <TrendUp className="h-4 w-4 mr-2" weight="fill" />
               View Pipeline
             </Button>
           </Link>

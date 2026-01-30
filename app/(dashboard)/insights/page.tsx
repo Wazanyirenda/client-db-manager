@@ -10,8 +10,8 @@ import {
   ChartBar,
   Users,
   CurrencyDollar,
-  TrendingUp,
-  TrendingDown,
+  TrendUp,
+  TrendDown,
   Clock,
   CheckCircle,
   Warning,
@@ -210,7 +210,7 @@ export default function InsightsPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <TrendingUp className="h-4 w-4 text-emerald-500" weight="bold" />
+                <TrendUp className="h-4 w-4 text-emerald-500" weight="bold" />
                 Won Deals
               </span>
               <span className="font-semibold text-emerald-600">
@@ -219,7 +219,7 @@ export default function InsightsPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 flex items-center gap-1">
-                <TrendingDown className="h-4 w-4 text-red-500" weight="bold" />
+                <TrendDown className="h-4 w-4 text-red-500" weight="bold" />
                 Lost Deals
               </span>
               <span className="font-semibold text-red-600">
@@ -329,7 +329,7 @@ export default function InsightsPage() {
         {/* Growth */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-600" weight="fill" />
+            <TrendUp className="h-5 w-5 text-emerald-600" weight="fill" />
             Growth
           </h3>
           <div className="space-y-3">
@@ -345,7 +345,7 @@ export default function InsightsPage() {
               <span className="text-sm text-gray-600">Month-over-month</span>
               {stats.addedThisMonth >= stats.addedLastMonth ? (
                 <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                  <TrendingUp className="h-4 w-4" weight="bold" />
+                  <TrendUp className="h-4 w-4" weight="bold" />
                   {stats.addedLastMonth > 0
                     ? `+${Math.round(((stats.addedThisMonth - stats.addedLastMonth) / stats.addedLastMonth) * 100)}%`
                     : stats.addedThisMonth > 0
@@ -354,7 +354,7 @@ export default function InsightsPage() {
                 </span>
               ) : (
                 <span className="text-red-600 font-semibold flex items-center gap-1">
-                  <TrendingDown className="h-4 w-4" weight="bold" />
+                  <TrendDown className="h-4 w-4" weight="bold" />
                   {Math.round(((stats.addedLastMonth - stats.addedThisMonth) / stats.addedLastMonth) * 100)}%
                 </span>
               )}
