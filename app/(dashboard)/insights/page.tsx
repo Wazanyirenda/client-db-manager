@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { useClients } from '@/lib/hooks/use-clients';
 import { useTasks } from '@/lib/hooks/use-tasks';
+import { useCurrency } from '@/lib/hooks/use-currency';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickSummary } from '@/components/dashboard/quick-summary';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +23,7 @@ import {
 export default function InsightsPage() {
   const { clients, loading: clientsLoading } = useClients();
   const { tasks, loading: tasksLoading } = useTasks();
+  const { formatAmount } = useCurrency();
 
   // Calculate detailed stats
   const stats = useMemo(() => {
@@ -205,7 +207,7 @@ export default function InsightsPage() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Pipeline Value</span>
               <span className="font-semibold text-gray-900">
-                ${stats.totalPipelineValue.toLocaleString()}
+                {formatAmount(stats.totalPipelineValue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -214,7 +216,7 @@ export default function InsightsPage() {
                 Won Deals
               </span>
               <span className="font-semibold text-emerald-600">
-                ${stats.wonDealsValue.toLocaleString()}
+                {formatAmount(stats.wonDealsValue)}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -223,7 +225,7 @@ export default function InsightsPage() {
                 Lost Deals
               </span>
               <span className="font-semibold text-red-600">
-                ${stats.lostDealsValue.toLocaleString()}
+                {formatAmount(stats.lostDealsValue)}
               </span>
             </div>
             <hr className="border-gray-200" />

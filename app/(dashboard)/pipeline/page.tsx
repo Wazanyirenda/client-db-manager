@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useClients, Client, PipelineStage } from '@/lib/hooks/use-clients';
+import { useCurrency } from '@/lib/hooks/use-currency';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +26,7 @@ const PIPELINE_STAGES: { key: PipelineStage; label: string; color: string }[] = 
 
 export default function PipelinePage() {
   const { clients, loading, updateClient, updateLastContact } = useClients();
+  const { formatAmount } = useCurrency();
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [draggedClient, setDraggedClient] = useState<Client | null>(null);
@@ -121,13 +123,13 @@ export default function PipelinePage() {
           </div>
           <div className="text-gray-600">
             <span className="font-semibold text-emerald-600">
-              ${stats.totalValue.toLocaleString()}
+              {formatAmount(stats.totalValue)}
             </span>{' '}
             pipeline value
           </div>
           <div className="text-gray-600">
             <span className="font-semibold text-emerald-600">
-              ${stats.wonValue.toLocaleString()}
+              {formatAmount(stats.wonValue)}
             </span>{' '}
             won
           </div>
@@ -217,9 +219,8 @@ export default function PipelinePage() {
                     {/* Deal Value */}
                     {client.deal_value && (
                       <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-emerald-600 font-medium text-sm">
-                          <CurrencyDollar className="h-3.5 w-3.5" weight="bold" />
-                          {Number(client.deal_value).toLocaleString()}
+                        <div className="text-emerald-600 font-medium text-sm">
+                          {formatAmount(Number(client.deal_value))}
                         </div>
                         {client.next_follow_up && new Date(client.next_follow_up) <= new Date() && (
                           <Badge className="bg-amber-100 text-amber-700 text-xs">

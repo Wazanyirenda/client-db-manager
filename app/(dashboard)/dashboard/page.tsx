@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Link from 'next/link';
 import { useClients, Client } from '@/lib/hooks/use-clients';
 import { useTasks } from '@/lib/hooks/use-tasks';
+import { useCurrency } from '@/lib/hooks/use-currency';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -22,6 +23,7 @@ import {
 export default function DashboardPage() {
   const { clients, loading: clientsLoading } = useClients();
   const { tasks, loading: tasksLoading } = useTasks();
+  const { formatAmount } = useCurrency();
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -140,7 +142,7 @@ export default function DashboardPage() {
           title="Paying Clients"
           value={stats.paying}
           icon={UserCheck}
-          subtitle={`$${stats.totalDealValue.toLocaleString()} total value`}
+          subtitle={`${formatAmount(stats.totalDealValue)} total value`}
         />
         <StatCard
           title="Tasks Due Today"
