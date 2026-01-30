@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { UserAvatar } from '@/components/dashboard/user-avatar';
+import { NotificationDropdown } from '@/components/notifications/notification-dropdown';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/hooks/use-clients';
-import { Search, Bell, User, Settings, LogOut } from 'lucide-react';
+import { MagnifyingGlass, User, Gear, SignOut } from '@phosphor-icons/react';
 
 interface AppHeaderProps {
   onSearch?: (query: string) => void;
@@ -57,7 +57,7 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
       {/* Center: Search */}
       <div className="flex-1 max-w-md mx-8">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" weight="regular" />
           <Input
             placeholder={searchPlaceholder}
             value={searchQuery}
@@ -73,10 +73,7 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
       {/* Right: Actions */}
       <div className="flex items-center gap-3">
         {/* Notifications */}
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 relative">
-          <Bell className="h-5 w-5 text-gray-500" />
-          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
-        </Button>
+        <NotificationDropdown />
 
         {/* User Menu */}
         <DropdownMenu>
@@ -100,14 +97,14 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
               onClick={() => router.push('/settings/profile')}
               className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
             >
-              <User className="h-4 w-4" />
+              <User className="h-4 w-4" weight="regular" />
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => router.push('/settings')}
               className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
             >
-              <Settings className="h-4 w-4" />
+              <Gear className="h-4 w-4" weight="regular" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-gray-200" />
@@ -115,7 +112,7 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
               onClick={handleLogout}
               className="px-3 py-2 text-sm cursor-pointer hover:bg-red-50 hover:text-red-600 rounded flex items-center gap-2 text-red-600"
             >
-              <LogOut className="h-4 w-4" />
+              <SignOut className="h-4 w-4" weight="regular" />
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -124,4 +121,3 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
     </header>
   );
 }
-

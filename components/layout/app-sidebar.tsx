@@ -6,16 +6,16 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import {
-  LayoutDashboard,
+  House,
   Users,
   CheckSquare,
   Kanban,
-  BarChart3,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+  ChartBar,
+  Gear,
+  SignOut,
+  CaretLeft,
+  CaretRight,
+} from '@phosphor-icons/react';
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -23,15 +23,15 @@ interface AppSidebarProps {
 }
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: House },
   { href: '/clients', label: 'Clients', icon: Users },
   { href: '/tasks', label: 'Tasks', icon: CheckSquare },
   { href: '/pipeline', label: 'Pipeline', icon: Kanban },
-  { href: '/insights', label: 'Insights', icon: BarChart3 },
+  { href: '/insights', label: 'Insights', icon: ChartBar },
 ];
 
 const bottomNavItems = [
-  { href: '/settings/profile', label: 'Settings', icon: Settings },
+  { href: '/settings/profile', label: 'Settings', icon: Gear },
 ];
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
@@ -64,9 +64,9 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
+            <CaretRight className="h-4 w-4" weight="bold" />
           ) : (
-            <ChevronLeft className="h-4 w-4" />
+            <CaretLeft className="h-4 w-4" weight="bold" />
           )}
         </Button>
       </div>
@@ -89,7 +89,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
               )}
               title={collapsed ? item.label : undefined}
             >
-              <Icon className="h-5 w-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" weight={isActive ? 'fill' : 'regular'} />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
@@ -114,7 +114,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
               )}
               title={collapsed ? item.label : undefined}
             >
-              <Icon className="h-5 w-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" weight={isActive ? 'fill' : 'regular'} />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
@@ -127,11 +127,10 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           )}
           title={collapsed ? 'Logout' : undefined}
         >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
+          <SignOut className="h-5 w-5 flex-shrink-0" weight="regular" />
           {!collapsed && <span>Logout</span>}
         </button>
       </div>
     </aside>
   );
 }
-
