@@ -49,7 +49,7 @@ const getNotificationColor = (type: NotificationType) => {
     case 'invoice_overdue':
       return 'text-red-600 bg-red-100';
     case 'no_contact':
-      return 'text-purple-600 bg-purple-100';
+      return 'text-gray-600 bg-gray-100';
     default:
       return 'text-gray-600 bg-gray-100';
   }
@@ -79,14 +79,14 @@ export function NotificationDropdown() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 relative">
-          <Bell className="h-5 w-5 text-gray-500" weight={unreadCount > 0 ? 'fill' : 'regular'} />
+        <button className="h-10 w-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center relative transition-colors">
+          <Bell className="h-6 w-6 text-gray-700" weight={unreadCount > 0 ? 'fill' : 'regular'} />
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white">
+            <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white ring-2 ring-white">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
-        </Button>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"

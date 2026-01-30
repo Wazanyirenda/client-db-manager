@@ -101,55 +101,51 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Overview of your client management</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/clients">
-            <Button variant="outline">
+          <Link href="/clients" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="w-full sm:w-auto">
               <Users className="h-4 w-4 mr-2" weight="fill" />
-              View Clients
+              <span className="sm:inline">Clients</span>
             </Button>
           </Link>
-          <Link href="/clients?add=true">
-            <Button>
+          <Link href="/clients?add=true" className="flex-1 sm:flex-none">
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" weight="bold" />
-              Add Client
+              <span className="sm:inline">Add</span>
             </Button>
           </Link>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Total Clients"
           value={stats.total}
           icon={Users}
-          color="blue"
           subtitle={`${stats.active} active`}
         />
         <StatCard
           title="Active Leads"
           value={stats.leads}
           icon={TrendUp}
-          color="amber"
           subtitle="In pipeline"
         />
         <StatCard
           title="Paying Clients"
           value={stats.paying}
           icon={UserCheck}
-          color="emerald"
           subtitle={`$${stats.totalDealValue.toLocaleString()} total value`}
         />
         <StatCard
           title="Tasks Due Today"
           value={stats.tasksDueToday}
           icon={CheckSquare}
-          color="purple"
           subtitle={stats.overdueTasks > 0 ? `${stats.overdueTasks} overdue` : 'All on track'}
           alert={stats.overdueTasks > 0}
         />
@@ -157,31 +153,33 @@ export default function DashboardPage() {
 
       {/* Alerts */}
       {(stats.overdueTasks > 0 || stats.overdueInvoices > 0) && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
-          <Warning className="h-5 w-5 text-red-500 flex-shrink-0" weight="fill" />
-          <div className="text-sm text-red-700">
-            {stats.overdueTasks > 0 && (
-              <span>
-                You have <strong>{stats.overdueTasks}</strong> overdue task{stats.overdueTasks > 1 ? 's' : ''}.
-              </span>
-            )}
-            {stats.overdueTasks > 0 && stats.overdueInvoices > 0 && ' '}
-            {stats.overdueInvoices > 0 && (
-              <span>
-                <strong>{stats.overdueInvoices}</strong> invoice{stats.overdueInvoices > 1 ? 's' : ''} past due.
-              </span>
-            )}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 flex-1">
+            <Warning className="h-5 w-5 text-red-500 flex-shrink-0" weight="fill" />
+            <div className="text-sm text-red-700">
+              {stats.overdueTasks > 0 && (
+                <span>
+                  <strong>{stats.overdueTasks}</strong> overdue task{stats.overdueTasks > 1 ? 's' : ''}.
+                </span>
+              )}
+              {stats.overdueTasks > 0 && stats.overdueInvoices > 0 && ' '}
+              {stats.overdueInvoices > 0 && (
+                <span>
+                  <strong>{stats.overdueInvoices}</strong> invoice{stats.overdueInvoices > 1 ? 's' : ''} past due.
+                </span>
+              )}
+            </div>
           </div>
-          <Link href="/tasks" className="ml-auto">
-            <Button size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
-              View Tasks
+          <Link href="/tasks">
+            <Button size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100 w-full sm:w-auto">
+              View
             </Button>
           </Link>
         </div>
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         {/* Recent Clients */}
         <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
@@ -341,50 +339,34 @@ export default function DashboardPage() {
   );
 }
 
-// Stat Card Component
+// Stat Card Component - Uniform professional blue style
 function StatCard({
   title,
   value,
   icon: Icon,
-  color,
   subtitle,
   alert,
 }: {
   title: string;
   value: number;
   icon: React.ElementType;
-  color: 'blue' | 'amber' | 'emerald' | 'purple';
   subtitle?: string;
   alert?: boolean;
 }) {
-  const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    amber: 'bg-amber-50 text-amber-600 border-amber-200',
-    emerald: 'bg-emerald-50 text-emerald-600 border-emerald-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
-  };
-
-  const iconBgClasses = {
-    blue: 'bg-blue-100',
-    amber: 'bg-amber-100',
-    emerald: 'bg-emerald-100',
-    purple: 'bg-purple-100',
-  };
-
   return (
-    <div className={`rounded-lg border p-5 ${colorClasses[color]}`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium opacity-80">{title}</p>
-          <p className="text-3xl font-bold mt-1">{value}</p>
+    <div className="rounded-xl border border-gray-200 bg-white p-3 sm:p-5 shadow-sm">
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">{title}</p>
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-0.5 sm:mt-1">{value}</p>
           {subtitle && (
-            <p className={`text-xs mt-1 ${alert ? 'text-red-600 font-medium' : 'opacity-70'}`}>
+            <p className={`text-[10px] sm:text-xs mt-0.5 sm:mt-1 truncate ${alert ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
               {subtitle}
             </p>
           )}
         </div>
-        <div className={`h-12 w-12 rounded-lg ${iconBgClasses[color]} flex items-center justify-center`}>
-          <Icon className="h-6 w-6" weight="fill" />
+        <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" weight="fill" />
         </div>
       </div>
     </div>

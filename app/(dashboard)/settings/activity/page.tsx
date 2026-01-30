@@ -55,9 +55,9 @@ const getActionColor = (action: ActivityAction) => {
     case 'task_deleted':
       return 'text-red-600 bg-red-100';
     case 'task_completed':
-      return 'text-purple-600 bg-purple-100';
+      return 'text-emerald-600 bg-emerald-100';
     case 'login':
-      return 'text-green-600 bg-green-100';
+      return 'text-blue-600 bg-blue-100';
     case 'logout':
       return 'text-gray-600 bg-gray-100';
     case 'data_exported':

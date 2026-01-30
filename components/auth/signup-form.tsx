@@ -325,7 +325,7 @@ export function SignupForm() {
             </button>
           </div>
           {password && (
-            <p className={`text-xs ${passwordLongEnough ? 'text-green-600' : 'text-gray-500'}`}>
+            <p className={`text-xs ${passwordLongEnough ? 'text-emerald-600' : 'text-gray-500'}`}>
               {passwordLongEnough ? (
                 <span className="flex items-center gap-1">
                   <Check className="h-3 w-3" /> At least 6 characters
@@ -352,7 +352,7 @@ export function SignupForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
-              className={`pr-10 ${passwordsDontMatch ? 'border-red-400 focus-visible:ring-red-400 focus-visible:border-red-400' : ''} ${passwordsMatch ? 'border-green-500 focus-visible:ring-green-500 focus-visible:border-green-500' : ''}`}
+              className={`pr-10 ${passwordsDontMatch ? 'border-red-400 focus-visible:ring-red-400 focus-visible:border-red-400' : ''} ${passwordsMatch ? 'border-emerald-500 focus-visible:ring-emerald-500 focus-visible:border-emerald-500' : ''}`}
             />
             <button
               type="button"
@@ -368,7 +368,7 @@ export function SignupForm() {
             </button>
           </div>
           {confirmPassword && (
-            <p className={`text-xs flex items-center gap-1 ${passwordsMatch ? 'text-green-600' : 'text-red-500'}`}>
+            <p className={`text-xs flex items-center gap-1 ${passwordsMatch ? 'text-emerald-600' : 'text-red-500'}`}>
               {passwordsMatch ? (
                 <>
                   <Check className="h-3 w-3" /> Passwords match
@@ -390,7 +390,7 @@ export function SignupForm() {
 
         {success && (
           <div className="space-y-2">
-            <p className="text-sm text-green-600" aria-live="polite">
+            <p className="text-sm text-emerald-600" aria-live="polite">
               Account created successfully! Redirecting to login...
             </p>
             <p className="text-xs text-gray-500">

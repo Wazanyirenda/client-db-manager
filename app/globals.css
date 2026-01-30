@@ -1,8 +1,64 @@
 @import "tailwindcss";
 
+/*
+ * Color System - ClientHub Design Tokens
+ * 
+ * 4 Accent Colors + Neutrals:
+ * - Primary (Blue): Brand, buttons, links, active nav, interactive elements
+ * - Success (Emerald): Paying clients, money, "Won" stage, active status
+ * - Attention (Amber): Leads, follow-ups, warnings, "Proposal" stage
+ * - Danger (Red): Errors, delete, "Lost" stage, overdue items
+ * - Neutral (Gray): Text, backgrounds, borders, "Data" clients, inactive
+ */
+
 :root {
+  /* Background & Text */
   --background: #f9fafb;
   --foreground: #111827;
+
+  /* Primary - Blue (Brand & Interactive) */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+
+  /* Success - Emerald (Positive outcomes, money) */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-200: #a7f3d0;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  /* Attention - Amber (Leads, warnings) */
+  --color-attention-50: #fffbeb;
+  --color-attention-100: #fef3c7;
+  --color-attention-200: #fde68a;
+  --color-attention-500: #f59e0b;
+  --color-attention-600: #d97706;
+  --color-attention-700: #b45309;
+
+  /* Danger - Red (Errors, destructive) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+
+  /* Neutral - Gray (Backgrounds, text, inactive) */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
 }
 
 @theme inline {
@@ -16,4 +72,27 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Safe area support for mobile devices with notches */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) {
+  .touch-feedback:active {
+    opacity: 0.7;
+  }
+}
+
+/* Better tap targets for mobile */
+@media (max-width: 640px) {
+  button, a {
+    min-height: 44px;
+  }
 }

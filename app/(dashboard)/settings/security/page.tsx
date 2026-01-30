@@ -78,7 +78,7 @@ export default function SecuritySettingsPage() {
               </p>
             )}
             {password && passwordValid && (
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-emerald-600 flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" weight="fill" />
                 Password strength: Good
               </p>
@@ -110,7 +110,7 @@ export default function SecuritySettingsPage() {
               </p>
             )}
             {passwordsMatch && (
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-emerald-600 flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" weight="fill" />
                 Passwords match
               </p>
@@ -120,7 +120,7 @@ export default function SecuritySettingsPage() {
           {message && (
             <div className={`p-4 rounded-lg flex items-center gap-2 ${
               message.type === 'success' 
-                ? 'bg-green-50 text-green-700 border border-green-200' 
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
                 : 'bg-red-50 text-red-700 border border-red-200'
             }`}>
               {message.type === 'success' ? (

@@ -85,7 +85,7 @@ export default function PreferencesSettingsPage() {
       {/* Save Button */}
       <div className="flex items-center justify-end gap-4">
         {message && (
-          <span className="text-sm text-green-600 flex items-center gap-1">
+          <span className="text-sm text-emerald-600 flex items-center gap-1">
             <CheckCircle className="h-4 w-4" weight="fill" />
             {message}
           </span>

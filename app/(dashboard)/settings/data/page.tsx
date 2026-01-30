@@ -95,8 +95,8 @@ export default function DataSettingsPage() {
               onClick={() => handleExport('csv')}
               className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group text-left"
             >
-              <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                <FileText className="h-6 w-6 text-green-600" weight="fill" />
+              <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <FileText className="h-6 w-6 text-blue-600" weight="fill" />
               </div>
               <div>
                 <div className="font-medium text-gray-900">CSV Format</div>

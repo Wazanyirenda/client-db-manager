@@ -171,7 +171,7 @@ export default function ClientsPage() {
       case 'Lead':
         return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Lead</Badge>;
       case 'Data':
-        return <Badge className="bg-purple-100 text-purple-700 border-purple-200">Data</Badge>;
+        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Data</Badge>;
       default:
         return <Badge className="bg-gray-100 text-gray-700 border-gray-200">-</Badge>;
     }
@@ -268,9 +268,9 @@ export default function ClientsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Clients</h1>
           <p className="text-sm text-gray-500 mt-1">
             {clients.length} total client{clients.length !== 1 ? 's' : ''}
           </p>
@@ -290,9 +290,9 @@ export default function ClientsPage() {
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <DownloadSimple className="h-4 w-4 mr-2" weight="bold" />
-                Export
+              <Button variant="outline" className="flex-1 sm:flex-none">
+                <DownloadSimple className="h-4 w-4 sm:mr-2" weight="bold" />
+                <span className="hidden sm:inline">Export</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg p-1 w-48">
@@ -326,9 +326,10 @@ export default function ClientsPage() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => setShowAddForm(true)}>
-            <Plus className="h-4 w-4 mr-2" weight="bold" />
-            Add Client
+          <Button onClick={() => setShowAddForm(true)} className="flex-1 sm:flex-none">
+            <Plus className="h-4 w-4 sm:mr-2" weight="bold" />
+            <span className="hidden sm:inline">Add Client</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
@@ -346,9 +347,10 @@ export default function ClientsPage() {
       />
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-3 sm:p-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          {/* Search - always full width */}
+          <div className="relative">
             <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" weight="bold" />
             <Input
               placeholder="Search clients..."
@@ -360,73 +362,166 @@ export default function ClientsPage() {
               className="pl-10"
             />
           </div>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => {
-              setStatusFilter(value);
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={typeFilter}
-            onValueChange={(value) => {
-              setTypeFilter(value);
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Lead">Leads</SelectItem>
-              <SelectItem value="Data">Data</SelectItem>
-              <SelectItem value="Paying">Paying</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={pageSize.toString()}
-            onValueChange={(value: string) => {
-              setPageSize(Number(value));
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-full md:w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">10 / page</SelectItem>
-              <SelectItem value="25">25 / page</SelectItem>
-              <SelectItem value="50">50 / page</SelectItem>
-              <SelectItem value="100">100 / page</SelectItem>
-            </SelectContent>
-          </Select>
-          {hasActiveFilters && (
-            <Button variant="ghost" onClick={clearFilters} className="gap-2">
-              <X className="h-4 w-4" weight="bold" />
-              Clear
-            </Button>
-          )}
+          
+          {/* Filter row - grid on mobile, flex on desktop */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-4">
+            <Select
+              value={statusFilter}
+              onValueChange={(value) => {
+                setStatusFilter(value);
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-32">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={typeFilter}
+              onValueChange={(value) => {
+                setTypeFilter(value);
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-32">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="Lead">Leads</SelectItem>
+                <SelectItem value="Data">Data</SelectItem>
+                <SelectItem value="Paying">Paying</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value: string) => {
+                setPageSize(Number(value));
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-28">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10">10 / page</SelectItem>
+                <SelectItem value="25">25 / page</SelectItem>
+                <SelectItem value="50">50 / page</SelectItem>
+                <SelectItem value="100">100 / page</SelectItem>
+              </SelectContent>
+            </Select>
+            {hasActiveFilters && (
+              <Button variant="ghost" onClick={clearFilters} className="gap-1 sm:gap-2">
+                <X className="h-4 w-4" weight="bold" />
+                <span className="hidden sm:inline">Clear</span>
+              </Button>
+            )}
+          </div>
         </div>
         {hasActiveFilters && (
-          <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+          <div className="mt-3 flex items-center gap-2 text-xs sm:text-sm text-gray-500">
             <Funnel className="h-4 w-4" weight="fill" />
-            Showing {filteredAndSortedClients.length} of {clients.length} clients
+            Showing {filteredAndSortedClients.length} of {clients.length}
           </div>
         )}
       </div>
 
-      {/* Clients Table */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      {/* Clients List - Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        {paginatedClients.length === 0 ? (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center text-gray-500">
+            {hasActiveFilters ? (
+              <>
+                No clients match your filters.{' '}
+                <button onClick={clearFilters} className="text-blue-600 hover:underline">
+                  Clear filters
+                </button>
+              </>
+            ) : (
+              <>
+                No clients yet.{' '}
+                <button onClick={() => setShowAddForm(true)} className="text-blue-600 hover:underline">
+                  Add your first client
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          paginatedClients.map((client) => (
+            <div
+              key={client.id}
+              className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 active:bg-gray-50 transition-colors"
+              onClick={() => setViewingClient(client)}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-semibold text-blue-700">
+                      {client.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-900 truncate">{client.name}</p>
+                    <p className="text-sm text-gray-500 truncate">{client.company || client.email || 'No details'}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                  {getClientTypeBadge(client.client_type)}
+                  <Badge variant={client.status === 'Active' ? 'active' : 'inactive'} className="text-[10px]">
+                    {client.status || 'Active'}
+                  </Badge>
+                </div>
+              </div>
+              
+              {/* Quick Info */}
+              {(client.phone || client.email) && (
+                <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                  {client.phone && <span>{client.phone}</span>}
+                  {client.email && <span className="truncate">{client.email}</span>}
+                </div>
+              )}
+              
+              {/* Actions */}
+              <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setViewingClient(client)}
+                  className="flex-1 h-8 text-xs"
+                >
+                  <Eye className="h-3.5 w-3.5 mr-1" weight="fill" />
+                  View
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditingClient(client)}
+                  className="flex-1 h-8 text-xs"
+                >
+                  <PencilSimple className="h-3.5 w-3.5 mr-1" weight="fill" />
+                  Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setDeletingClient(client)}
+                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
+                >
+                  <Trash className="h-3.5 w-3.5" weight="fill" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Clients Table - Desktop */}
+      <div className="hidden md:block bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -561,61 +656,66 @@ export default function ClientsPage() {
             </tbody>
           </table>
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
-              Showing {(currentPage - 1) * pageSize + 1} to{' '}
-              {Math.min(currentPage * pageSize, filteredAndSortedClients.length)} of{' '}
-              {filteredAndSortedClients.length} clients
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum: number;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = currentPage - 2 + i;
-                  }
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={currentPage === pageNum ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setCurrentPage(pageNum)}
-                      className="min-w-[40px]"
-                    >
-                      {pageNum}
-                    </Button>
-                  );
-                })}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-xs sm:text-sm text-gray-700 order-2 sm:order-1">
+            Showing {(currentPage - 1) * pageSize + 1} to{' '}
+            {Math.min(currentPage * pageSize, filteredAndSortedClients.length)} of{' '}
+            {filteredAndSortedClients.length}
+          </div>
+          <div className="flex gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="flex-1 sm:flex-none"
+            >
+              Prev
+            </Button>
+            <div className="hidden sm:flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum: number;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={currentPage === pageNum ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className="min-w-[40px]"
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+            </div>
+            <span className="sm:hidden flex items-center text-sm text-gray-500">
+              {currentPage} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="flex-1 sm:flex-none"
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Client Details Modal */}
       <ClientDetailsModal

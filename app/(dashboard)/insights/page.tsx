@@ -190,7 +190,7 @@ export default function InsightsPage() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Data Entries</span>
-              <Badge className="bg-purple-100 text-purple-700">{stats.dataCount}</Badge>
+              <Badge className="bg-gray-100 text-gray-700">{stats.dataCount}</Badge>
             </div>
           </div>
         </div>
@@ -303,7 +303,7 @@ export default function InsightsPage() {
         {/* Tasks */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-purple-600" weight="fill" />
+            <CheckCircle className="h-5 w-5 text-blue-600" weight="fill" />
             Tasks
           </h3>
           <div className="space-y-3">

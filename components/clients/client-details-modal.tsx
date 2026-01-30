@@ -53,13 +53,13 @@ export function ClientDetailsModal({
   const getClientTypeBadge = (type: string | null) => {
     switch (type) {
       case 'Paying':
-        return <Badge variant="active" className="bg-emerald-100 text-emerald-700">Paying Client</Badge>;
+        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Paying Client</Badge>;
       case 'Lead':
-        return <Badge variant="inactive" className="bg-amber-100 text-amber-700">Lead</Badge>;
+        return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Lead</Badge>;
       case 'Data':
-        return <Badge variant="inactive" className="bg-purple-100 text-purple-700">Data</Badge>;
+        return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Data</Badge>;
       default:
-        return <Badge variant="inactive">{type || 'Unknown'}</Badge>;
+        return <Badge className="bg-gray-100 text-gray-600 border-gray-200">{type || 'Unknown'}</Badge>;
     }
   };
 

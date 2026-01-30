@@ -29,8 +29,8 @@ export function StatsCards({ clients }: StatsCardsProps) {
       label: 'Active',
       value: activeClients,
       icon: UserCheck,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-100',
     },
     {
       label: 'Inactive',
@@ -50,8 +50,8 @@ export function StatsCards({ clients }: StatsCardsProps) {
       label: 'Data',
       value: dataClients,
       icon: Database,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      color: 'text-gray-600',
+      bgColor: 'bg-gray-100',
     },
     {
       label: 'Paying Clients',

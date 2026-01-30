@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { UserAvatar } from '@/components/dashboard/user-avatar';
 import { NotificationDropdown } from '@/components/notifications/notification-dropdown';
 import {
@@ -14,17 +15,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/hooks/use-clients';
-import { MagnifyingGlass, User, Gear, SignOut } from '@phosphor-icons/react';
+import { MagnifyingGlass, User, Gear, SignOut, List, X } from '@phosphor-icons/react';
 
 interface AppHeaderProps {
   onSearch?: (query: string) => void;
   searchPlaceholder?: string;
+  onMenuToggle?: () => void;
 }
 
-export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHeaderProps) {
+export function AppHeader({ onSearch, searchPlaceholder = 'Search...', onMenuToggle }: AppHeaderProps) {
   const router = useRouter();
   const { profile } = useProfile();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   const handleLogout = async () => {
     const supabase = createSupabaseBrowserClient();
@@ -41,22 +44,33 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
   };
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-      {/* Left: Greeting */}
-      <div className="flex items-center gap-4">
-        <div>
-          <h1 className="text-lg font-semibold text-gray-900">
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
+      {/* Left: Menu Toggle (mobile) + Greeting */}
+      <div className="flex items-center gap-3">
+        {/* Mobile Menu Toggle */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onMenuToggle}
+          className="h-9 w-9 p-0 lg:hidden"
+        >
+          <List className="h-5 w-5" weight="bold" />
+        </Button>
+
+        {/* Greeting - hide on small mobile when search is open */}
+        <div className={showMobileSearch ? 'hidden' : 'block'}>
+          <h1 className="text-base lg:text-lg font-semibold text-gray-900">
             {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'there'}
           </h1>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 hidden sm:block">
             {profile?.company_name || 'Manage your clients'}
           </p>
         </div>
       </div>
 
-      {/* Center: Search */}
-      <div className="flex-1 max-w-md mx-8">
-        <div className="relative">
+      {/* Center: Search - Desktop */}
+      <div className="hidden md:flex flex-1 max-w-md mx-8">
+        <div className="relative w-full">
           <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" weight="regular" />
           <Input
             placeholder={searchPlaceholder}
@@ -65,13 +79,46 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
               setSearchQuery(e.target.value);
               onSearch?.(e.target.value);
             }}
-            className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
+            className="pl-10 bg-gray-50 border-gray-200 focus:bg-white w-full"
           />
         </div>
       </div>
 
+      {/* Mobile Search - Expandable */}
+      {showMobileSearch && (
+        <div className="flex-1 mx-2 md:hidden">
+          <div className="relative">
+            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" weight="regular" />
+            <Input
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                onSearch?.(e.target.value);
+              }}
+              className="pl-10 bg-gray-50 border-gray-200 focus:bg-white w-full"
+              autoFocus
+            />
+          </div>
+        </div>
+      )}
+
       {/* Right: Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 lg:gap-3">
+        {/* Mobile Search Toggle */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowMobileSearch(!showMobileSearch)}
+          className="h-9 w-9 p-0 md:hidden"
+        >
+          {showMobileSearch ? (
+            <X className="h-5 w-5" weight="bold" />
+          ) : (
+            <MagnifyingGlass className="h-5 w-5" weight="regular" />
+          )}
+        </Button>
+
         {/* Notifications */}
         <NotificationDropdown />
 
@@ -79,7 +126,7 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...' }: AppHead
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 transition-colors">
-              <UserAvatar name={profile?.full_name} size={36} />
+              <UserAvatar name={profile?.full_name} avatarUrl={profile?.avatar_url} size={36} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { AppHeader } from '@/components/layout/app-header';
+import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav';
 import { cn } from '@/lib/utils';
 
 export default function DashboardLayout({
@@ -14,6 +15,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
 
   // Check authentication
@@ -30,7 +32,7 @@ export default function DashboardLayout({
     checkAuth();
   }, [router]);
 
-  // Persist sidebar state
+  // Persist sidebar state (desktop only)
   useEffect(() => {
     const stored = localStorage.getItem('sidebar_collapsed');
     if (stored !== null) {
@@ -38,10 +40,29 @@ export default function DashboardLayout({
     }
   }, []);
 
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleToggleSidebar = () => {
     const newState = !sidebarCollapsed;
     setSidebarCollapsed(newState);
     localStorage.setItem('sidebar_collapsed', String(newState));
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMenuOpen(false);
   };
 
   if (!authChecked) {
@@ -57,22 +78,32 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
-      {/* Sidebar */}
-      <AppSidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
+      {/* Sidebar - hidden on mobile, shown on desktop */}
+      <AppSidebar
+        collapsed={sidebarCollapsed}
+        onToggle={handleToggleSidebar}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={handleMobileMenuClose}
+      />
 
       {/* Main Content Area */}
       <div
         className={cn(
           'transition-all duration-300',
-          sidebarCollapsed ? 'ml-16' : 'ml-56'
+          // Mobile: no margin, Desktop: margin based on sidebar
+          'lg:ml-16',
+          !sidebarCollapsed && 'lg:ml-56'
         )}
       >
         {/* Header */}
-        <AppHeader />
+        <AppHeader onMenuToggle={handleMobileMenuToggle} />
 
-        {/* Page Content */}
-        <main className="p-6">{children}</main>
+        {/* Page Content - add bottom padding for mobile nav */}
+        <main className="p-4 lg:p-6 pb-20 lg:pb-6">{children}</main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 }
