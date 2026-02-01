@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -203,13 +204,11 @@ export function SignupForm() {
             <label className="text-sm font-medium text-gray-700" htmlFor="phone">
               Phone
             </label>
-            <Input
-              id="phone"
-              type="tel"
-              autoComplete="tel"
+            <PhoneInput
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 555-0123"
+              onChange={setPhone}
+              placeholder="97 123 4567"
+              defaultCountry="ZM"
             />
           </div>
           <div className="space-y-1.5">

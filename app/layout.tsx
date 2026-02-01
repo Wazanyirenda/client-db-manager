@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Client Database Dashboard",
-  description: "Slack-inspired client management dashboard powered by Supabase.",
+  title: "Crush CRM",
+  description: "CRM for your business",
 };
 
 export default function RootLayout({

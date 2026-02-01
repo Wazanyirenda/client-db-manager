@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -41,6 +41,11 @@ export function ClientForm({
     deal_value: initialData?.deal_value?.toString() || '',
     invoice_status: initialData?.invoice_status || 'Unpaid',
     invoice_due_date: initialData?.invoice_due_date || '',
+    billing_type: initialData?.billing_type || 'One-time',
+    billing_frequency: initialData?.billing_frequency || '',
+    recurring_amount: initialData?.recurring_amount?.toString() || '',
+    next_billing_date: initialData?.next_billing_date || '',
+    services: initialData?.services || '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -62,6 +67,11 @@ export function ClientForm({
         deal_value: initialData.deal_value?.toString() || '',
         invoice_status: initialData.invoice_status || 'Unpaid',
         invoice_due_date: initialData.invoice_due_date || '',
+        billing_type: initialData.billing_type || 'One-time',
+        billing_frequency: initialData.billing_frequency || '',
+        recurring_amount: initialData.recurring_amount?.toString() || '',
+        next_billing_date: initialData.next_billing_date || '',
+        services: initialData.services || '',
       });
     }
   }, [initialData]);
@@ -91,233 +101,359 @@ export function ClientForm({
         deal_value: '',
         invoice_status: 'Unpaid',
         invoice_due_date: '',
+        billing_type: 'One-time',
+        billing_frequency: '',
+        recurring_amount: '',
+        next_billing_date: '',
+        services: '',
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         {/* Basic Info */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Name <span className="text-red-500">*</span>
           </label>
-          <Input
+          <input
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Client name"
             required
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Email
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
+            Email <span className="text-red-500">*</span>
           </label>
-          <Input
+          <input
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="client@example.com"
+            required
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Phone
           </label>
-          <Input
+          <PhoneInput
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            placeholder="+1 (555) 000-0000"
+            onChange={(value) => setFormData({ ...formData, phone: value })}
+            placeholder="97 123 4567"
+            defaultCountry="ZM"
           />
         </div>
 
         {/* Company Info */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Company
           </label>
-          <Input
+          <input
             value={formData.company}
             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
             placeholder="Company name"
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Website
           </label>
-          <Input
+          <input
             type="url"
             value={formData.website}
             onChange={(e) => setFormData({ ...formData, website: e.target.value })}
             placeholder="https://example.com"
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Source
           </label>
-          <Input
+          <input
             value={formData.source}
             onChange={(e) => setFormData({ ...formData, source: e.target.value })}
             placeholder="Referral, Website, Ad, etc."
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         {/* Status Fields */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Client Type
           </label>
           <Select
             value={formData.client_type}
-            onValueChange={(value: ClientType) => setFormData({ ...formData, client_type: value })}
+            onValueChange={(value: ClientType) => {
+              const nextState: ClientFormData = { ...formData, client_type: value };
+              if (value !== 'Paying') {
+                nextState.billing_type = 'One-time';
+                nextState.billing_frequency = '';
+                nextState.recurring_amount = '';
+                nextState.next_billing_date = '';
+                nextState.services = '';
+                nextState.invoice_status = 'Unpaid';
+                nextState.invoice_due_date = '';
+                nextState.deal_value = '';
+              }
+              if (value === 'Data') {
+                nextState.pipeline_stage = 'Inquiry';
+                nextState.next_follow_up = '';
+              }
+              setFormData(nextState);
+            }}
           >
-            <SelectTrigger>
+            <SelectTrigger className="h-12 text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Lead">Lead</SelectItem>
-              <SelectItem value="Data">Data</SelectItem>
-              <SelectItem value="Paying">Paying Client</SelectItem>
+              <SelectItem value="Lead" className="text-base py-3">Lead</SelectItem>
+              <SelectItem value="Data" className="text-base py-3">Data</SelectItem>
+              <SelectItem value="Paying" className="text-base py-3">Paying Client</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
             Status
           </label>
           <Select
             value={formData.status}
             onValueChange={(value) => setFormData({ ...formData, status: value })}
           >
-            <SelectTrigger>
+            <SelectTrigger className="h-12 text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
+              <SelectItem value="Active" className="text-base py-3">Active</SelectItem>
+              <SelectItem value="Inactive" className="text-base py-3">Inactive</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Pipeline + Follow-up */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Pipeline Stage
-          </label>
-          <Select
-            value={formData.pipeline_stage}
-            onValueChange={(value: PipelineStage) =>
-              setFormData({ ...formData, pipeline_stage: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Inquiry">Inquiry</SelectItem>
-              <SelectItem value="Contacted">Contacted</SelectItem>
-              <SelectItem value="Proposal">Proposal</SelectItem>
-              <SelectItem value="Won">Won</SelectItem>
-              <SelectItem value="Lost">Lost</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Next Follow-up
-          </label>
-          <Input
-            type="datetime-local"
-            value={formData.next_follow_up}
-            onChange={(e) =>
-              setFormData({ ...formData, next_follow_up: e.target.value })
-            }
-          />
-        </div>
+        {formData.client_type !== 'Data' && (
+          <>
+            {/* Pipeline + Follow-up */}
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Pipeline Stage
+              </label>
+              <Select
+                value={formData.pipeline_stage}
+                onValueChange={(value: PipelineStage) =>
+                  setFormData({ ...formData, pipeline_stage: value })
+                }
+              >
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Inquiry" className="text-base py-3">Inquiry</SelectItem>
+                  <SelectItem value="Contacted" className="text-base py-3">Contacted</SelectItem>
+                  <SelectItem value="Proposal" className="text-base py-3">Proposal</SelectItem>
+                  <SelectItem value="Won" className="text-base py-3">Won</SelectItem>
+                  <SelectItem value="Lost" className="text-base py-3">Lost</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Next Follow-up
+              </label>
+              <input
+                type="datetime-local"
+                value={formData.next_follow_up}
+                onChange={(e) =>
+                  setFormData({ ...formData, next_follow_up: e.target.value })
+                }
+                className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </>
+        )}
 
-        {/* Invoice Tracking */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Deal Value
-          </label>
-          <Input
-            type="number"
-            inputMode="decimal"
-            value={formData.deal_value}
-            onChange={(e) =>
-              setFormData({ ...formData, deal_value: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Invoice Status
-          </label>
-          <Select
-            value={formData.invoice_status}
-            onValueChange={(value: InvoiceStatus) =>
-              setFormData({ ...formData, invoice_status: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Unpaid">Unpaid</SelectItem>
-              <SelectItem value="Paid">Paid</SelectItem>
-              <SelectItem value="Overdue">Overdue</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Invoice Due Date
-          </label>
-          <Input
-            type="date"
-            value={formData.invoice_due_date}
-            onChange={(e) =>
-              setFormData({ ...formData, invoice_due_date: e.target.value })
-            }
-          />
-        </div>
+        {formData.client_type === 'Paying' && (
+          <>
+            {/* Invoice Tracking */}
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Deal Value
+              </label>
+              <input
+                type="number"
+                inputMode="decimal"
+                value={formData.deal_value}
+                onChange={(e) =>
+                  setFormData({ ...formData, deal_value: e.target.value })
+                }
+                placeholder="0"
+                className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Invoice Status
+              </label>
+              <Select
+                value={formData.invoice_status}
+                onValueChange={(value: InvoiceStatus) =>
+                  setFormData({ ...formData, invoice_status: value })
+                }
+              >
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Unpaid" className="text-base py-3">Unpaid</SelectItem>
+                  <SelectItem value="Paid" className="text-base py-3">Paid</SelectItem>
+                  <SelectItem value="Overdue" className="text-base py-3">Overdue</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Invoice Due Date
+              </label>
+              <input
+                type="date"
+                value={formData.invoice_due_date}
+                onChange={(e) =>
+                  setFormData({ ...formData, invoice_due_date: e.target.value })
+                }
+                className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-base font-semibold text-gray-800">
+                Billing Type
+              </label>
+              <Select
+                value={formData.billing_type}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, billing_type: value })
+                }
+              >
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="One-time" className="text-base py-3">One-time</SelectItem>
+                  <SelectItem value="Recurring" className="text-base py-3">Recurring</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {formData.billing_type === 'Recurring' && (
+              <>
+                <div className="space-y-3">
+                  <label className="text-base font-semibold text-gray-800">
+                    Billing Frequency
+                  </label>
+                  <Select
+                    value={formData.billing_frequency}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, billing_frequency: value })
+                    }
+                  >
+                    <SelectTrigger className="h-12 text-base">
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Weekly" className="text-base py-3">Weekly</SelectItem>
+                      <SelectItem value="Monthly" className="text-base py-3">Monthly</SelectItem>
+                      <SelectItem value="Quarterly" className="text-base py-3">Quarterly</SelectItem>
+                      <SelectItem value="Yearly" className="text-base py-3">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-3">
+                  <label className="text-base font-semibold text-gray-800">
+                    Recurring Amount
+                  </label>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    value={formData.recurring_amount}
+                    onChange={(e) =>
+                      setFormData({ ...formData, recurring_amount: e.target.value })
+                    }
+                    placeholder="0"
+                    className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-base font-semibold text-gray-800">
+                    Next Billing Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.next_billing_date}
+                    onChange={(e) =>
+                      setFormData({ ...formData, next_billing_date: e.target.value })
+                    }
+                    className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="space-y-3 md:col-span-2">
+              <label className="text-base font-semibold text-gray-800">
+                Services (what they are paying for)
+              </label>
+              <textarea
+                value={formData.services}
+                onChange={(e) => setFormData({ ...formData, services: e.target.value })}
+                placeholder="Describe the services for this paying client..."
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 min-h-[120px] resize-y"
+              />
+            </div>
+          </>
+        )}
 
         {/* Address - Full Width */}
-        <div className="space-y-2 md:col-span-2 lg:col-span-3">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-base font-semibold text-gray-800">
             Address
           </label>
-          <Input
+          <input
             value={formData.address}
             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             placeholder="Street address, City, State, ZIP"
+            className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         {/* Notes - Full Width */}
-        <div className="space-y-2 md:col-span-2 lg:col-span-3">
-          <label className="text-sm font-medium text-gray-700">
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-base font-semibold text-gray-800">
             Notes
           </label>
           <textarea
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             placeholder="Additional notes about this client..."
-            className="flex w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm outline-none placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-1 focus-visible:ring-blue-500 min-h-[80px] resize-y"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 min-h-[120px] resize-y"
           />
         </div>
       </div>
-      <div className="flex gap-2 justify-end">
+      <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
         {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel} className="h-12 px-6 text-base">
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="h-12 px-8 text-base font-semibold">
           {loading ? 'Saving...' : submitLabel}
         </Button>
       </div>

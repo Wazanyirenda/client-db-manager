@@ -1,6 +1,7 @@
 "use client";
 
 import { Client } from '@/lib/hooks/use-clients';
+import { exportClientInvoice } from '@/lib/export';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -70,6 +71,11 @@ export function ClientDetailsModal({
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  const formatCurrency = (value: number | null) => {
+    if (value === null || Number.isNaN(value)) return '—';
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value);
   };
 
   return (
@@ -214,6 +220,48 @@ export function ClientDetailsModal({
             </div>
           </div>
 
+          {/* Billing & Services (Paying Clients) */}
+          {client.client_type === 'Paying' && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FileText className="h-4 w-4" weight="fill" />
+                Billing & Services
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
+                <div>
+                  <p className="text-xs text-gray-500">Billing Type</p>
+                  <p className="text-sm text-gray-900">{client.billing_type || 'One-time'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Billing Frequency</p>
+                  <p className="text-sm text-gray-900">{client.billing_frequency || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Recurring Amount</p>
+                  <p className="text-sm text-gray-900">{formatCurrency(client.recurring_amount)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Next Billing Date</p>
+                  <p className="text-sm text-gray-900">{client.next_billing_date || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Invoice Status</p>
+                  <p className="text-sm text-gray-900">{client.invoice_status || 'Unpaid'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Invoice Due Date</p>
+                  <p className="text-sm text-gray-900">{client.invoice_due_date || '—'}</p>
+                </div>
+              </div>
+              {client.services && (
+                <div className="mt-3 bg-gray-50 rounded-lg p-4">
+                  <p className="text-xs text-gray-500 mb-2">Services</p>
+                  <p className="text-sm text-gray-900 whitespace-pre-wrap">{client.services}</p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Notes */}
           {client.notes && (
             <div>
@@ -259,14 +307,22 @@ export function ClientDetailsModal({
           </div>
         </div>
 
-        <div className="flex justify-between gap-2 mt-6 pt-4 border-t border-gray-200">
-          <Button 
-            variant="outline" 
-            onClick={() => onUpdateLastContact(client.id)}
-          >
-            <Phone className="h-4 w-4 mr-2" weight="fill" />
-            Log Contact
-          </Button>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6 pt-4 border-t border-gray-200">
+          <div className="flex flex-wrap gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => onUpdateLastContact(client.id)}
+            >
+              <Phone className="h-4 w-4 mr-2" weight="fill" />
+              Log Contact
+            </Button>
+            {client.client_type === 'Paying' && (
+              <Button variant="outline" onClick={() => exportClientInvoice(client)}>
+                <FileText className="h-4 w-4 mr-2" weight="fill" />
+                Download Invoice
+              </Button>
+            )}
+          </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
               Close

@@ -34,10 +34,10 @@ export function ClientDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+      <DialogContent className="!max-w-[1400px] !w-[95vw] max-h-[95vh] overflow-y-auto p-4 sm:p-6 md:p-10">
+        <DialogHeader className="pb-4 border-b border-gray-200 mb-6">
+          <DialogTitle className="text-2xl font-bold">{title}</DialogTitle>
+          <DialogDescription className="text-base text-gray-600">{description}</DialogDescription>
         </DialogHeader>
         <ClientForm
           initialData={initialData}

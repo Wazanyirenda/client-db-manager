@@ -76,15 +76,19 @@ export default function PipelinePage() {
   const handleDragStart = (e: React.DragEvent, client: Client) => {
     setDraggedClient(client);
     e.dataTransfer.effectAllowed = 'move';
+    // Set data to prevent browser navigation on drop
+    e.dataTransfer.setData('text/plain', client.id);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
   };
 
   const handleDrop = async (e: React.DragEvent, stage: PipelineStage) => {
     e.preventDefault();
+    e.stopPropagation();
     if (draggedClient && draggedClient.pipeline_stage !== stage) {
       // If moving to Won, also update client_type to Paying
       const updates: any = { pipeline_stage: stage };
@@ -93,6 +97,10 @@ export default function PipelinePage() {
       }
       await updateClient(draggedClient.id, updates);
     }
+    setDraggedClient(null);
+  };
+
+  const handleDragEnd = () => {
     setDraggedClient(null);
   };
 
@@ -137,7 +145,7 @@ export default function PipelinePage() {
       </div>
 
       {/* Kanban Board */}
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-4 overflow-x-auto pb-4" onDragOver={handleDragOver} onDrop={(e) => e.preventDefault()}>
         {PIPELINE_STAGES.map((stage) => (
           <div
             key={stage.key}
@@ -167,6 +175,7 @@ export default function PipelinePage() {
                     key={client.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, client)}
+                    onDragEnd={handleDragEnd}
                     className={`bg-white rounded-lg border border-gray-200 p-3 cursor-move hover:shadow-md transition-shadow ${
                       draggedClient?.id === client.id ? 'opacity-50' : ''
                     }`}
@@ -178,24 +187,24 @@ export default function PipelinePage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 w-6 p-0"
+                          className="h-8 w-8 p-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewingClient(client);
                           }}
                         >
-                          <Eye className="h-3 w-3" weight="fill" />
+                          <Eye className="h-4 w-4" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 w-6 p-0"
+                          className="h-8 w-8 p-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingClient(client);
                           }}
                         >
-                          <PencilSimple className="h-3 w-3" weight="fill" />
+                          <PencilSimple className="h-4 w-4" weight="fill" />
                         </Button>
                       </div>
                     </div>
@@ -305,6 +314,11 @@ export default function PipelinePage() {
             deal_value: editingClient.deal_value?.toString() || '',
             invoice_status: editingClient.invoice_status || 'Unpaid',
             invoice_due_date: editingClient.invoice_due_date || '',
+            billing_type: editingClient.billing_type || 'One-time',
+            billing_frequency: editingClient.billing_frequency || '',
+            recurring_amount: editingClient.recurring_amount?.toString() || '',
+            next_billing_date: editingClient.next_billing_date || '',
+            services: editingClient.services || '',
           }}
           onSubmit={async (data) => {
             await updateClient(editingClient.id, data);

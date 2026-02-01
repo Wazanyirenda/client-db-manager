@@ -492,27 +492,27 @@ export default function ClientsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setViewingClient(client)}
-                  className="flex-1 h-8 text-xs"
+                  className="flex-1 h-9 text-sm"
                 >
-                  <Eye className="h-3.5 w-3.5 mr-1" weight="fill" />
+                  <Eye className="h-4 w-4 mr-1.5" weight="fill" />
                   View
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setEditingClient(client)}
-                  className="flex-1 h-8 text-xs"
+                  className="flex-1 h-9 text-sm"
                 >
-                  <PencilSimple className="h-3.5 w-3.5 mr-1" weight="fill" />
+                  <PencilSimple className="h-4 w-4 mr-1.5" weight="fill" />
                   Edit
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setDeletingClient(client)}
-                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
+                  className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
                 >
-                  <Trash className="h-3.5 w-3.5" weight="fill" />
+                  <Trash className="h-4 w-4" weight="fill" />
                 </Button>
               </div>
             </div>
@@ -625,28 +625,28 @@ export default function ClientsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setViewingClient(client)}
-                          className="h-8 w-8 p-0"
+                          className="h-9 w-9 p-0"
                           title="View details"
                         >
-                          <Eye className="h-4 w-4" weight="fill" />
+                          <Eye className="h-5 w-5" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingClient(client)}
-                          className="h-8 w-8 p-0"
+                          className="h-9 w-9 p-0"
                           title="Edit client"
                         >
-                          <PencilSimple className="h-4 w-4" weight="fill" />
+                          <PencilSimple className="h-5 w-5" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setDeletingClient(client)}
-                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                          className="h-9 w-9 p-0 text-red-600 hover:text-red-700"
                           title="Delete client"
                         >
-                          <Trash className="h-4 w-4" weight="fill" />
+                          <Trash className="h-5 w-5" weight="fill" />
                         </Button>
                       </div>
                     </td>
@@ -752,6 +752,11 @@ export default function ClientsPage() {
             deal_value: editingClient.deal_value?.toString() || '',
             invoice_status: editingClient.invoice_status || 'Unpaid',
             invoice_due_date: editingClient.invoice_due_date || '',
+            billing_type: editingClient.billing_type || 'One-time',
+            billing_frequency: editingClient.billing_frequency || '',
+            recurring_amount: editingClient.recurring_amount?.toString() || '',
+            next_billing_date: editingClient.next_billing_date || '',
+            services: editingClient.services || '',
           }}
           onSubmit={async (data) => {
             await updateClient(editingClient.id, data);

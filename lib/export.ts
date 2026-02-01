@@ -20,6 +20,11 @@ export interface Client {
   deal_value: number | null;
   invoice_status: string | null;
   invoice_due_date: string | null;
+  billing_type: string | null;
+  billing_frequency: string | null;
+  recurring_amount: number | null;
+  next_billing_date: string | null;
+  services: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -179,4 +184,59 @@ export function exportToPDF(clients: Client[]) {
   });
 
   doc.save(`clients_${new Date().toISOString().split('T')[0]}.pdf`);
+}
+
+export function exportClientInvoice(client: Client) {
+  const doc = new jsPDF();
+  const today = new Date();
+
+  const formatCurrency = (value: number | null) => {
+    if (value === null || Number.isNaN(value)) return '-';
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value);
+  };
+
+  doc.setFontSize(18);
+  doc.text('Invoice', 14, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(100);
+  doc.text(`Generated on ${today.toLocaleDateString()}`, 14, 28);
+
+  doc.setTextColor(20);
+  doc.setFontSize(12);
+  doc.text(`Client: ${client.name}`, 14, 40);
+  doc.text(`Email: ${client.email || '-'}`, 14, 48);
+  doc.text(`Company: ${client.company || '-'}`, 14, 56);
+
+  const details = [
+    ['Billing Type', client.billing_type || 'One-time'],
+    ['Billing Frequency', client.billing_frequency || '-'],
+    ['Recurring Amount', formatCurrency(client.recurring_amount)],
+    ['Next Billing Date', client.next_billing_date || '-'],
+    ['Deal Value', formatCurrency(client.deal_value)],
+    ['Invoice Status', client.invoice_status || 'Unpaid'],
+    ['Invoice Due Date', client.invoice_due_date || '-'],
+  ];
+
+  // @ts-ignore - jspdf-autotable extends jsPDF
+  doc.autoTable({
+    head: [['Field', 'Value']],
+    body: details,
+    startY: 65,
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [37, 99, 235] },
+    columnStyles: { 0: { cellWidth: 50 } },
+  });
+
+  const servicesText = client.services?.trim();
+  if (servicesText) {
+    const finalY = (doc as any).lastAutoTable?.finalY || 120;
+    doc.setFontSize(12);
+    doc.text('Services', 14, finalY + 12);
+    doc.setFontSize(10);
+    doc.setTextColor(80);
+    doc.text(servicesText, 14, finalY + 20, { maxWidth: 180 });
+  }
+
+  doc.save(`invoice_${client.name.replace(/\s+/g, '_').toLowerCase()}_${today.toISOString().split('T')[0]}.pdf`);
 }

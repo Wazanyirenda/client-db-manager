@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useProfile } from "@/lib/hooks/use-clients";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserAvatar } from "@/components/dashboard/user-avatar";
@@ -104,7 +105,7 @@ export default function ProfileSettingsPage() {
   const handleSave = async () => {
     setLoading(true);
     setSaved(false);
-    await updateProfile({
+    const result = await updateProfile({
       full_name: fullName,
       company_name: companyName,
       phone,
@@ -113,6 +114,22 @@ export default function ProfileSettingsPage() {
       role,
       company_size: companySize,
     });
+
+    if (result.success) {
+      // Immediately update the profile state for instant UI feedback
+      setProfile(prev => prev ? {
+        ...prev,
+        full_name: fullName,
+        company_name: companyName,
+        phone,
+        website,
+        industry,
+        role,
+        company_size: companySize,
+        updated_at: new Date().toISOString()
+      } : null);
+    }
+
     setLoading(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -202,10 +219,11 @@ export default function ProfileSettingsPage() {
               <Phone className="h-3.5 w-3.5 text-gray-400" weight="regular" />
               Phone
             </label>
-            <Input 
-              value={phone} 
-              onChange={(e) => setPhone(e.target.value)} 
-              placeholder="+1 (555) 123-4567"
+            <PhoneInput
+              value={phone}
+              onChange={setPhone}
+              placeholder="97 123 4567"
+              defaultCountry="ZM"
               className="h-11"
             />
           </div>

@@ -26,6 +26,11 @@ export interface Client {
   deal_value: number | null;
   invoice_status: InvoiceStatus | null;
   invoice_due_date: string | null;
+  billing_type: string | null;
+  billing_frequency: string | null;
+  recurring_amount: number | null;
+  next_billing_date: string | null;
+  services: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -46,6 +51,11 @@ export interface ClientFormData {
   deal_value: string;
   invoice_status: InvoiceStatus;
   invoice_due_date: string;
+  billing_type: string;
+  billing_frequency: string;
+  recurring_amount: string;
+  next_billing_date: string;
+  services: string;
 }
 
 export interface Profile {
@@ -110,6 +120,13 @@ export function useClients() {
           ? null
           : Number(clientData.deal_value);
 
+    const recurringAmount =
+      clientData.recurring_amount === undefined
+        ? undefined
+        : clientData.recurring_amount === ''
+          ? null
+          : Number(clientData.recurring_amount);
+
     const nextFollowUp =
       clientData.next_follow_up === undefined
         ? undefined
@@ -124,11 +141,20 @@ export function useClients() {
           ? clientData.invoice_due_date
           : null;
 
+    const nextBillingDate =
+      clientData.next_billing_date === undefined
+        ? undefined
+        : clientData.next_billing_date
+          ? clientData.next_billing_date
+          : null;
+
     return {
       ...clientData,
       deal_value: Number.isNaN(dealValue as number) ? null : dealValue,
+      recurring_amount: Number.isNaN(recurringAmount as number) ? null : recurringAmount,
       next_follow_up: nextFollowUp,
       invoice_due_date: invoiceDueDate,
+      next_billing_date: nextBillingDate,
     };
   };
 
@@ -157,6 +183,11 @@ export function useClients() {
           deal_value: payload.deal_value ?? null,
           invoice_status: payload.invoice_status || 'Unpaid',
           invoice_due_date: payload.invoice_due_date ?? null,
+          billing_type: clientData.billing_type || 'One-time',
+          billing_frequency: clientData.billing_frequency || null,
+          recurring_amount: payload.recurring_amount ?? null,
+          next_billing_date: payload.next_billing_date ?? null,
+          services: clientData.services || null,
         })
         .select()
         .single();
@@ -265,6 +296,11 @@ export function useClients() {
             deal_value: payload.deal_value ?? null,
             invoice_status: (payload.invoice_status as InvoiceStatus) || 'Unpaid',
             invoice_due_date: payload.invoice_due_date ?? null,
+            billing_type: row.billing_type ? String(row.billing_type) : 'One-time',
+            billing_frequency: row.billing_frequency ? String(row.billing_frequency) : null,
+            recurring_amount: payload.recurring_amount ?? null,
+            next_billing_date: payload.next_billing_date ?? null,
+            services: row.services ? String(row.services) : null,
           };
         });
 
