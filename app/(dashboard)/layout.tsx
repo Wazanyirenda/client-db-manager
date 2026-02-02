@@ -67,7 +67,7 @@ export default function DashboardLayout({
   };
 
   if (!authChecked) {
-    return <Loading fullScreen size="lg" text="Loading" />;
+    return <Loading fullScreen />;
   }
 
   return (

@@ -10,7 +10,7 @@ import { ClientDetailsModal } from '@/components/clients/client-details-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loading } from '@/components/ui/loading';
+import { ClientsSkeleton } from '@/components/ui/loading';
 import {
   Select,
   SelectContent,
@@ -259,11 +259,7 @@ export default function ClientsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loading size="md" text="Loading clients" showLogo={false} />
-      </div>
-    );
+    return <ClientsSkeleton />;
   }
 
   return (

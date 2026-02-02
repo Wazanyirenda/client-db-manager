@@ -5,7 +5,7 @@ import { useClients, Client, PipelineStage } from '@/lib/hooks/use-clients';
 import { useCurrency } from '@/lib/hooks/use-currency';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loading } from '@/components/ui/loading';
+import { PipelineSkeleton } from '@/components/ui/loading';
 import {
   Kanban,
   CurrencyDollar,
@@ -106,11 +106,7 @@ export default function PipelinePage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loading size="md" text="Loading pipeline" showLogo={false} />
-      </div>
-    );
+    return <PipelineSkeleton />;
   }
 
   return (
