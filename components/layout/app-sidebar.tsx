@@ -14,6 +14,7 @@ import {
   CaretLeft,
   CaretRight,
   X,
+  SidebarSimple,
 } from '@phosphor-icons/react';
 
 interface AppSidebarProps {
@@ -31,13 +32,10 @@ const navItems = [
   { href: '/insights', label: 'Insights', icon: ChartBar },
 ];
 
-// Settings and Logout are in the profile dropdown only - no duplicates
-
 export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: AppSidebarProps) {
   const pathname = usePathname();
 
   const handleNavClick = () => {
-    // Close mobile sidebar when navigating
     if (mobileOpen && onMobileClose) {
       onMobileClose();
     }
@@ -55,33 +53,29 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
 
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen bg-white border-r border-gray-200 flex flex-col z-50 transition-all duration-300',
-          // Mobile: hidden by default, slide in when mobileOpen
+          'fixed left-0 top-0 h-screen bg-white border-r border-gray-200 flex flex-col z-50 transition-all duration-300 shadow-sm',
           'max-lg:-translate-x-full max-lg:w-64',
           mobileOpen && 'max-lg:translate-x-0',
-          // Desktop: respect collapsed state
           'lg:translate-x-0',
-          collapsed ? 'lg:w-16' : 'lg:w-56'
+          collapsed ? 'lg:w-[72px]' : 'lg:w-60'
         )}
       >
         {/* Logo / Brand */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-          {/* Logo - always visible */}
-          <Link href="/dashboard" className={cn(
-            'flex items-center gap-2',
-            collapsed ? 'lg:justify-center lg:w-full' : ''
-          )}>
+        <div className={cn(
+          'h-16 flex items-center border-b border-gray-200',
+          collapsed ? 'lg:justify-center lg:px-2' : 'justify-between px-4'
+        )}>
+          <Link href="/dashboard" className="flex items-center gap-3">
             <Image
               src="/cliently-logo.png"
               alt="Cliently"
-              width={36}
-              height={36}
-              className="rounded-lg flex-shrink-0"
+              width={40}
+              height={40}
+              className="rounded-xl flex-shrink-0"
             />
-            {/* Text - hide when collapsed on desktop */}
             <span className={cn(
-              'font-bold text-lg text-blue-600',
-              collapsed && 'lg:hidden'
+              'font-bold text-xl text-blue-600 transition-opacity',
+              collapsed ? 'lg:hidden lg:opacity-0' : 'lg:opacity-100'
             )}>
               Cliently
             </span>
@@ -92,57 +86,69 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             variant="ghost"
             size="sm"
             onClick={onMobileClose}
-            className="h-8 w-8 p-0 lg:hidden"
+            className="h-9 w-9 p-0 lg:hidden hover:bg-gray-100"
           >
-            <X className="h-4 w-4" weight="bold" />
-          </Button>
-
-          {/* Desktop collapse button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggle}
-            className={cn('h-8 w-8 p-0 hidden lg:flex', collapsed && 'mx-auto')}
-            title={collapsed ? 'Expand' : 'Collapse'}
-          >
-            {collapsed ? (
-              <CaretRight className="h-4 w-4" weight="bold" />
-            ) : (
-              <CaretLeft className="h-4 w-4" weight="bold" />
-            )}
+            <X className="h-5 w-5" weight="bold" />
           </Button>
         </div>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={handleNavClick}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                  : 'text-gray-700 hover:bg-gray-100 border border-transparent',
-                // Mobile: never justify-center, Desktop: respect collapsed
-                'lg:data-[collapsed=true]:justify-center lg:data-[collapsed=true]:px-2'
-              )}
-              data-collapsed={collapsed}
-              title={collapsed ? item.label : undefined}
-            >
-              <Icon className="h-5 w-5 flex-shrink-0" weight={isActive ? 'fill' : 'regular'} />
-              {/* Mobile: always show label, Desktop: hide when collapsed */}
-              <span className={cn('lg:block', collapsed && 'lg:hidden')}>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+        {/* Main Navigation */}
+        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={handleNavClick}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                  collapsed && 'lg:justify-center lg:px-0'
+                )}
+                title={collapsed ? item.label : undefined}
+              >
+                <Icon className={cn('h-5 w-5 flex-shrink-0', collapsed && 'lg:h-6 lg:w-6')} weight={isActive ? 'fill' : 'regular'} />
+                <span className={cn(
+                  'transition-opacity',
+                  collapsed ? 'lg:hidden lg:opacity-0 lg:w-0' : 'lg:opacity-100'
+                )}>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
 
-    </aside>
+        {/* Collapse Toggle - Desktop Only */}
+        <div className={cn(
+          'hidden lg:block border-t border-gray-200 p-3',
+          collapsed && 'px-2'
+        )}>
+          <button
+            onClick={onToggle}
+            className={cn(
+              'w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+              'text-gray-500 hover:bg-gray-100 hover:text-gray-700',
+              collapsed && 'justify-center px-0'
+            )}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? (
+              <CaretRight className="h-5 w-5" weight="bold" />
+            ) : (
+              <>
+                <SidebarSimple className="h-5 w-5" weight="regular" />
+                <span>Collapse</span>
+                <CaretLeft className="h-4 w-4 ml-auto" weight="bold" />
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
     </>
   );
 }

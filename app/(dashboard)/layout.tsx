@@ -91,8 +91,7 @@ export default function DashboardLayout({
         className={cn(
           'transition-all duration-300',
           // Mobile: no margin, Desktop: margin based on sidebar
-          'lg:ml-16',
-          !sidebarCollapsed && 'lg:ml-56'
+          sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-60'
         )}
       >
         {/* Header */}
