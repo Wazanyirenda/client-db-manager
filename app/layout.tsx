@@ -14,8 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crush CRM",
-  description: "CRM for your business",
+  title: "Cliently",
+  description: "Cliently - The simple CRM for your business",
+  icons: {
+    icon: "/cliently-logo.png",
+    shortcut: "/cliently-logo.png",
+    apple: "/cliently-logo.png",
+  },
 };
 
 export default function RootLayout({

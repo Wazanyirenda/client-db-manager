@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -66,13 +67,32 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
         {/* Logo / Brand */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
           {/* Mobile: always show brand, Desktop: hide when collapsed */}
-          <span className={cn(
-            'font-bold text-lg text-blue-600',
-            'lg:block',
+          <Link href="/dashboard" className={cn(
+            'flex items-center gap-2',
+            'lg:flex',
             collapsed && 'lg:hidden'
           )}>
-            ClientHub
-          </span>
+            <Image
+              src="/cliently-logo.png"
+              alt="Cliently"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
+            <span className="font-bold text-lg text-blue-600">Cliently</span>
+          </Link>
+          {/* Collapsed: show only logo */}
+          {collapsed && (
+            <Link href="/dashboard" className="hidden lg:block mx-auto">
+              <Image
+                src="/cliently-logo.png"
+                alt="Cliently"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
+            </Link>
+          )}
           
           {/* Mobile close button */}
           <Button
