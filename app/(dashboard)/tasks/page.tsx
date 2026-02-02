@@ -6,6 +6,7 @@ import { useClients } from '@/lib/hooks/use-clients';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Loading } from '@/components/ui/loading';
 import {
   Select,
   SelectContent,
@@ -129,7 +130,7 @@ export default function TasksPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <Loading size="md" text="Loading tasks" showLogo={false} />
       </div>
     );
   }

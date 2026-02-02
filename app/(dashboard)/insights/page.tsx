@@ -7,6 +7,7 @@ import { useCurrency } from '@/lib/hooks/use-currency';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickSummary } from '@/components/dashboard/quick-summary';
 import { Badge } from '@/components/ui/badge';
+import { Loading } from '@/components/ui/loading';
 import {
   ChartBar,
   Users,
@@ -136,7 +137,7 @@ export default function InsightsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <Loading size="md" text="Loading insights" showLogo={false} />
       </div>
     );
   }

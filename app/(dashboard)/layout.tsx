@@ -6,6 +6,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { AppHeader } from '@/components/layout/app-header';
 import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav';
+import { Loading } from '@/components/ui/loading';
 import { cn } from '@/lib/utils';
 
 export default function DashboardLayout({
@@ -66,14 +67,7 @@ export default function DashboardLayout({
   };
 
   if (!authChecked) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <Loading fullScreen size="lg" text="Loading" />;
   }
 
   return (

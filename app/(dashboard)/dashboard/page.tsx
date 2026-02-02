@@ -7,6 +7,7 @@ import { useTasks } from '@/lib/hooks/use-tasks';
 import { useCurrency } from '@/lib/hooks/use-currency';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Loading } from '@/components/ui/loading';
 import {
   Users,
   UserCheck,
@@ -95,7 +96,7 @@ export default function DashboardPage() {
   if (clientsLoading || tasksLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <Loading size="md" text="Loading dashboard" showLogo={false} />
       </div>
     );
   }
