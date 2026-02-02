@@ -38,36 +38,52 @@ export function useNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
   const supabase = createSupabaseBrowserClient();
 
-  const fetchNotifications = useCallback(async () => {
+  const fetchNotifications = useCallback(async (isMounted = true) => {
+    if (!isMounted) return;
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !isMounted) {
+        setLoading(false);
+        return;
+      }
 
-    const { data, error } = await supabase
-      .from('notifications')
-      .select(`
-        *,
-        client:clients(id, name),
-        task:tasks(id, title)
-      `)
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(50);
+      const { data, error } = await supabase
+        .from('notifications')
+        .select(`
+          *,
+          client:clients(id, name),
+          task:tasks(id, title)
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
 
-    if (error) {
-      console.error('Error fetching notifications:', error);
-    } else {
-      setNotifications(data || []);
-      setUnreadCount((data || []).filter(n => !n.read).length);
+      if (!isMounted) return;
+      
+      if (error) {
+        // Ignore empty table errors
+        if (error.code !== 'PGRST116') {
+          console.error('Error fetching notifications:', error.message);
+        }
+      } else {
+        setNotifications(data || []);
+        setUnreadCount((data || []).filter(n => !n.read).length);
+      }
+    } catch (err: any) {
+      // Ignore abort errors
+      if (err.name !== 'AbortError' && !err.message?.includes('aborted')) {
+        console.error('Error fetching notifications:', err.message);
+      }
+    } finally {
+      if (isMounted) setLoading(false);
     }
-    setLoading(false);
   }, [supabase]);
 
   useEffect(() => {
-    fetchNotifications();
+    let isMounted = true;
+    fetchNotifications(isMounted);
 
     // Subscribe to real-time updates
     const channel = supabase
@@ -80,12 +96,13 @@ export function useNotifications() {
           table: 'notifications',
         },
         () => {
-          fetchNotifications();
+          if (isMounted) fetchNotifications(isMounted);
         }
       )
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
   }, [fetchNotifications, supabase]);

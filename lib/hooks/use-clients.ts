@@ -80,14 +80,17 @@ export function useClients() {
 
   const supabase = createSupabaseBrowserClient();
 
-  const fetchClients = async () => {
+  const fetchClients = async (isMounted = true) => {
     try {
+      if (!isMounted) return;
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        setError('Not authenticated');
-        setLoading(false);
+      if (!user || !isMounted) {
+        if (isMounted) {
+          setError('Not authenticated');
+          setLoading(false);
+        }
         return;
       }
 
@@ -97,19 +100,24 @@ export function useClients() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
+      if (!isMounted) return;
       if (fetchError) throw fetchError;
       setClients(data || []);
       setError(null);
     } catch (err: any) {
+      // Ignore abort errors
+      if (err.name === 'AbortError' || err.message?.includes('aborted')) return;
       setError(err.message);
       toast.error('Failed to fetch clients');
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchClients();
+    let isMounted = true;
+    fetchClients(isMounted);
+    return () => { isMounted = false; };
   }, []);
 
   const normalizeClientPayload = (clientData: Partial<ClientFormData>) => {
@@ -344,12 +352,12 @@ export function useProfile() {
 
   const supabase = createSupabaseBrowserClient();
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (signal?: AbortSignal) => {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
+      if (!user || signal?.aborted) {
         setLoading(false);
         return;
       }
@@ -360,9 +368,12 @@ export function useProfile() {
         .eq('id', user.id)
         .single();
 
+      if (signal?.aborted) return;
       if (error && error.code !== 'PGRST116') throw error;
       setProfile(data);
     } catch (err: any) {
+      // Ignore abort errors (component unmounted)
+      if (err.name === 'AbortError' || err.message?.includes('aborted')) return;
       console.error('Failed to fetch profile:', err.message);
     } finally {
       setLoading(false);
@@ -393,13 +404,15 @@ export function useProfile() {
   };
 
   useEffect(() => {
-    fetchProfile();
+    const abortController = new AbortController();
+    fetchProfile(abortController.signal);
+    return () => abortController.abort();
   }, []);
 
   return {
     profile,
     loading,
-    fetchProfile,
+    fetchProfile: () => fetchProfile(),
     updateProfile,
   };
 }
