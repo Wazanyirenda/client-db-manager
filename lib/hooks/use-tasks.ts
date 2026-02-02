@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { toast } from '@/lib/utils/toast';
 
 export interface Task {
   id: string;

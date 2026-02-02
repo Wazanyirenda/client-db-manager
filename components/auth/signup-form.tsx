@@ -150,11 +150,11 @@ export function SignupForm() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Google Sign Up Button */}
       <button
         type="button"
-        className="w-full flex items-center justify-center gap-3 h-10 px-4 rounded-lg bg-white hover:bg-gray-100 text-gray-800 font-medium border border-gray-300 shadow-sm transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-3 h-12 px-4 rounded-lg bg-white hover:bg-gray-50 text-gray-900 font-medium border-2 border-gray-200 shadow-sm transition-all hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handleGoogleSignUp}
         disabled={googleLoading}
       >
@@ -164,247 +164,274 @@ export function SignupForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-300" />
+          <span className="w-full border-t border-gray-200" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+          <span className="bg-white px-3 text-gray-500 font-medium">Or continue with email</span>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700" htmlFor="fullName">
-              Full Name <span className="text-red-500">*</span>
-            </label>
-            <Input
-              id="fullName"
-              type="text"
-              autoComplete="name"
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="John Doe"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700" htmlFor="companyName">
-              Company / Organization
-            </label>
-            <Input
-              id="companyName"
-              type="text"
-              autoComplete="organization"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              placeholder="Acme Inc. (optional)"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700" htmlFor="phone">
-              Phone
-            </label>
-            <PhoneInput
-              value={phone}
-              onChange={setPhone}
-              placeholder="97 123 4567"
-              defaultCountry="ZM"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700" htmlFor="website">
-              Website
-            </label>
-            <Input
-              id="website"
-              type="url"
-              autoComplete="url"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              placeholder="https://acme.com"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">
-              Industry
-            </label>
-            <Select value={industry || undefined} onValueChange={setIndustry}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select industry" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Technology">Technology</SelectItem>
-                <SelectItem value="Healthcare">Healthcare</SelectItem>
-                <SelectItem value="Retail">Retail</SelectItem>
-                <SelectItem value="Finance">Finance</SelectItem>
-                <SelectItem value="Real Estate">Real Estate</SelectItem>
-                <SelectItem value="Consulting">Consulting</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">
-              Role / Position
-            </label>
-            <Select value={role || undefined} onValueChange={setRole}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Owner">Owner</SelectItem>
-                <SelectItem value="Manager">Manager</SelectItem>
-                <SelectItem value="Sales Rep">Sales Rep</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5 md:col-span-2">
-            <label className="text-sm font-medium text-gray-700">
-              Company Size
-            </label>
-            <Select value={companySize || undefined} onValueChange={setCompanySize}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select company size" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1-10">1-10</SelectItem>
-                <SelectItem value="11-50">11-50</SelectItem>
-                <SelectItem value="51-200">51-200</SelectItem>
-                <SelectItem value="200+">200+</SelectItem>
-              </SelectContent>
-            </Select>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Personal Information Section */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Personal Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900" htmlFor="fullName">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="fullName"
+                type="text"
+                autoComplete="name"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="John Doe"
+                className="h-12 text-base"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900" htmlFor="email">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="h-12 text-base"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900" htmlFor="phone">
+                Phone
+              </label>
+              <PhoneInput
+                value={phone}
+                onChange={setPhone}
+                placeholder="97 123 4567"
+                defaultCountry="ZM"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900" htmlFor="website">
+                Website
+              </label>
+              <Input
+                id="website"
+                type="url"
+                autoComplete="url"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                placeholder="https://acme.com"
+                className="h-12 text-base"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700" htmlFor="email">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label
-            className="text-sm font-medium text-gray-700"
-            htmlFor="password"
-          >
-            Password <span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="new-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 6 characters"
-              minLength={6}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              tabIndex={-1}
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </button>
+        {/* Business Information Section */}
+        <div className="space-y-4 pt-2">
+          <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Business Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900" htmlFor="companyName">
+                Company / Organization
+              </label>
+              <Input
+                id="companyName"
+                type="text"
+                autoComplete="organization"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                placeholder="Acme Inc. (optional)"
+                className="h-12 text-base"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900">
+                Industry
+              </label>
+              <Select value={industry || undefined} onValueChange={setIndustry}>
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="Select industry" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Technology">Technology</SelectItem>
+                  <SelectItem value="Healthcare">Healthcare</SelectItem>
+                  <SelectItem value="Retail">Retail</SelectItem>
+                  <SelectItem value="Finance">Finance</SelectItem>
+                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                  <SelectItem value="Consulting">Consulting</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900">
+                Role / Position
+              </label>
+              <Select value={role || undefined} onValueChange={setRole}>
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Owner">Owner</SelectItem>
+                  <SelectItem value="Manager">Manager</SelectItem>
+                  <SelectItem value="Sales Rep">Sales Rep</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-900">
+                Company Size
+              </label>
+              <Select value={companySize || undefined} onValueChange={setCompanySize}>
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="Select company size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1-10">1-10</SelectItem>
+                  <SelectItem value="11-50">11-50</SelectItem>
+                  <SelectItem value="51-200">51-200</SelectItem>
+                  <SelectItem value="200+">200+</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          {password && (
-            <p className={`text-xs ${passwordLongEnough ? 'text-emerald-600' : 'text-gray-500'}`}>
-              {passwordLongEnough ? (
-                <span className="flex items-center gap-1">
-                  <Check className="h-3 w-3" /> At least 6 characters
-                </span>
-              ) : (
-                `${password.length}/6 characters minimum`
-              )}
-            </p>
-          )}
         </div>
-        <div className="space-y-1.5">
-          <label
-            className="text-sm font-medium text-gray-700"
-            htmlFor="confirmPassword"
-          >
-            Confirm Password <span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <Input
-              id="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              autoComplete="new-password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
-              className={`pr-10 ${passwordsDontMatch ? 'border-red-400 focus-visible:ring-red-400 focus-visible:border-red-400' : ''} ${passwordsMatch ? 'border-emerald-500 focus-visible:ring-emerald-500 focus-visible:border-emerald-500' : ''}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              tabIndex={-1}
-            >
-              {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
+
+        {/* Password Section */}
+        <div className="space-y-4 pt-2 border-t border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Account Security</h3>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label
+                className="text-sm font-semibold text-gray-900"
+                htmlFor="password"
+              >
+                Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  minLength={6}
+                  className="pr-12 h-12 text-base"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+              {password && (
+                <p className={`text-xs flex items-center gap-1 ${passwordLongEnough ? 'text-emerald-600' : 'text-gray-500'}`}>
+                  {passwordLongEnough ? (
+                    <>
+                      <Check className="h-3 w-3" /> At least 6 characters
+                    </>
+                  ) : (
+                    `${password.length}/6 characters minimum`
+                  )}
+                </p>
               )}
-            </button>
+            </div>
+            <div className="space-y-2">
+              <label
+                className="text-sm font-semibold text-gray-900"
+                htmlFor="confirmPassword"
+              >
+                Confirm Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm your password"
+                  className={`pr-12 h-12 text-base ${passwordsDontMatch ? 'border-red-400 focus-visible:ring-red-400 focus-visible:border-red-400' : ''} ${passwordsMatch ? 'border-emerald-500 focus-visible:ring-emerald-500 focus-visible:border-emerald-500' : ''}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+              {confirmPassword && (
+                <p className={`text-xs flex items-center gap-1 ${passwordsMatch ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {passwordsMatch ? (
+                    <>
+                      <Check className="h-3 w-3" /> Passwords match
+                    </>
+                  ) : (
+                    <>
+                      <X className="h-3 w-3" /> Passwords do not match
+                    </>
+                  )}
+                </p>
+              )}
+            </div>
           </div>
-          {confirmPassword && (
-            <p className={`text-xs flex items-center gap-1 ${passwordsMatch ? 'text-emerald-600' : 'text-red-500'}`}>
-              {passwordsMatch ? (
-                <>
-                  <Check className="h-3 w-3" /> Passwords match
-                </>
-              ) : (
-                <>
-                  <X className="h-3 w-3" /> Passwords do not match
-                </>
-              )}
-            </p>
-          )}
         </div>
 
         {error && (
-          <p className="text-sm text-red-500" aria-live="polite">
-            {error}
-          </p>
+          <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+            <p className="text-sm text-red-700 font-medium" aria-live="polite">
+              {error}
+            </p>
+          </div>
         )}
 
         {success && (
-          <div className="space-y-2">
-            <p className="text-sm text-emerald-600" aria-live="polite">
+          <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
+            <p className="text-sm text-emerald-700 font-medium" aria-live="polite">
               Account created successfully! Redirecting to login...
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-emerald-600 mt-1">
               Check your email to verify your account (if email confirmation is enabled).
             </p>
           </div>
         )}
 
-        <Button type="submit" className="w-full" disabled={loading || success || passwordsDontMatch}>
+        <Button 
+          type="submit" 
+          className="w-full h-12 text-base font-semibold" 
+          disabled={loading || success || passwordsDontMatch}
+        >
           {loading ? "Creating account..." : success ? "Account Created!" : "Create Account"}
         </Button>
 
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-600 pt-2">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 hover:text-blue-500 underline">
+          <Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
             Sign in
           </Link>
         </div>

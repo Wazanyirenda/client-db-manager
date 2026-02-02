@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useClients, Client, ClientType } from '@/lib/hooks/use-clients';
 import { exportToCSV, exportToExcel, exportToPDF } from '@/lib/export';
 import { ClientForm } from '@/components/clients/client-form';
@@ -53,6 +53,7 @@ type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'crea
 type SortDirection = 'asc' | 'desc';
 
 export default function ClientsPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const {
     clients,
@@ -91,6 +92,11 @@ export default function ClientsPage() {
       const client = clients.find((c) => c.id === viewParam);
       if (client) {
         setViewingClient(client);
+      } else if (viewParam && clients.length > 0) {
+        // Client was deleted, clear the URL param
+        const currentPath = window.location.pathname;
+        const newUrl = currentPath.split('?')[0];
+        window.history.replaceState({}, '', newUrl);
       }
     }
   }, [searchParams, clients]);
@@ -280,7 +286,7 @@ export default function ClientsPage() {
             {clients.length} total client{clients.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -290,49 +296,72 @@ export default function ClientsPage() {
               const file = e.target.files?.[0];
               if (!file) return;
               await handleImportCSV(file);
-              e.currentTarget.value = '';
+              // Reset file input using ref
+              if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+              }
             }}
           />
+          {/* Import Button - Always Visible */}
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2"
+          >
+            <UploadSimple className="h-4 w-4" weight="bold" />
+            <span className="hidden sm:inline">Import CSV</span>
+            <span className="sm:hidden">Import</span>
+          </Button>
+          
+          {/* Export Dropdown - More Visible */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex-1 sm:flex-none">
-                <DownloadSimple className="h-4 w-4 sm:mr-2" weight="bold" />
+              <Button variant="outline" className="flex items-center gap-2">
+                <DownloadSimple className="h-4 w-4" weight="bold" />
                 <span className="hidden sm:inline">Export</span>
+                <span className="sm:hidden">Export</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg p-1 w-48">
-              <DropdownMenuItem
-                onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
-              >
-                <UploadSimple className="h-4 w-4" weight="bold" />
-                Import CSV
-              </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg p-2 w-56">
+              <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Export Format
+              </div>
               <DropdownMenuItem
                 onClick={() => handleExport('csv')}
-                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
+                className="px-3 py-2.5 text-sm cursor-pointer hover:bg-gray-100 rounded-md flex items-center gap-3 my-1"
               >
-                <FileText className="h-4 w-4" weight="fill" />
-                Export as CSV
+                <FileText className="h-5 w-5 text-blue-600" weight="fill" />
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-900">CSV</span>
+                  <span className="text-xs text-gray-500">Comma-separated values</span>
+                </div>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleExport('excel')}
-                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
+                className="px-3 py-2.5 text-sm cursor-pointer hover:bg-gray-100 rounded-md flex items-center gap-3 my-1"
               >
-                <FileXls className="h-4 w-4" weight="fill" />
-                Export as Excel
+                <FileXls className="h-5 w-5 text-emerald-600" weight="fill" />
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-900">Excel</span>
+                  <span className="text-xs text-gray-500">Microsoft Excel (.xlsx)</span>
+                </div>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleExport('pdf')}
-                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded flex items-center gap-2"
+                className="px-3 py-2.5 text-sm cursor-pointer hover:bg-gray-100 rounded-md flex items-center gap-3 my-1"
               >
-                <FilePdf className="h-4 w-4" weight="fill" />
-                Export as PDF
+                <FilePdf className="h-5 w-5 text-red-600" weight="fill" />
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-900">PDF</span>
+                  <span className="text-xs text-gray-500">Portable Document Format</span>
+                </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => setShowAddForm(true)} className="flex-1 sm:flex-none">
-            <Plus className="h-4 w-4 sm:mr-2" weight="bold" />
+          
+          {/* Add Client Button */}
+          <Button onClick={() => setShowAddForm(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" weight="bold" />
             <span className="hidden sm:inline">Add Client</span>
             <span className="sm:hidden">Add</span>
           </Button>
@@ -514,7 +543,11 @@ export default function ClientsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setDeletingClient(client)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDeletingClient(client);
+                  }}
                   className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
                 >
                   <Trash className="h-4 w-4" weight="fill" />
@@ -647,7 +680,11 @@ export default function ClientsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setDeletingClient(client)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDeletingClient(client);
+                          }}
                           className="h-9 w-9 p-0 text-red-600 hover:text-red-700"
                           title="Delete client"
                         >
@@ -777,7 +814,14 @@ export default function ClientsPage() {
 
       {/* Delete Confirmation */}
       {deletingClient && (
-        <AlertDialog open={!!deletingClient} onOpenChange={(open) => !open && setDeletingClient(null)}>
+        <AlertDialog 
+          open={!!deletingClient} 
+          onOpenChange={(open) => {
+            if (!open) {
+              setDeletingClient(null);
+            }
+          }}
+        >
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Client</AlertDialogTitle>
@@ -788,8 +832,32 @@ export default function ClientsPage() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={async () => {
-                  await deleteClient(deletingClient.id);
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  
+                  const clientId = deletingClient.id;
+                  
+                  // Close viewing modal if open for this client
+                  if (viewingClient?.id === clientId) {
+                    setViewingClient(null);
+                    // Clear URL param if present
+                    if (searchParams.get('view') === clientId) {
+                      const currentPath = window.location.pathname;
+                      const newUrl = currentPath.split('?')[0];
+                      window.history.replaceState({}, '', newUrl);
+                    }
+                  }
+                  
+                  // Close editing modal if open for this client
+                  if (editingClient?.id === clientId) {
+                    setEditingClient(null);
+                  }
+                  
+                  // Delete the client
+                  await deleteClient(clientId);
+                  
+                  // Clear the deleting state
                   setDeletingClient(null);
                 }}
                 className="bg-red-600 hover:bg-red-700"

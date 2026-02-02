@@ -35,7 +35,28 @@ export default function RootLayout({
         className={`${plusJakarta.variable} ${jetbrainsMono.variable} font-sans antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100`}
       >
         {children}
-        <Toaster position="top-right" richColors />
+        <Toaster 
+          position="top-right" 
+          richColors
+          expand={true}
+          closeButton={true}
+          toastOptions={{
+            style: {
+              borderRadius: '12px',
+              padding: '16px 20px',
+              fontSize: '14px',
+              fontWeight: '500',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+            },
+            classNames: {
+              toast: 'toast-custom',
+              title: 'toast-title',
+              description: 'toast-description',
+              actionButton: 'toast-action-button',
+              cancelButton: 'toast-cancel-button',
+            },
+          }}
+        />
       </body>
     </html>
   );

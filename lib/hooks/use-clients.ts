@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/lib/utils/toast';
 
 export type ClientType = 'Lead' | 'Data' | 'Paying';
 export type PipelineStage = 'Inquiry' | 'Contacted' | 'Proposal' | 'Won' | 'Lost';

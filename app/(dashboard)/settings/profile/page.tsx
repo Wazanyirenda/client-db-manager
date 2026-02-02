@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserAvatar } from "@/components/dashboard/user-avatar";
 import { User, Buildings, Phone, Globe, Briefcase, UsersThree, CheckCircle, Camera, Trash } from "@phosphor-icons/react";
-import { toast } from "sonner";
+import { toast } from '@/lib/utils/toast';
 
 export default function ProfileSettingsPage() {
   const { profile, updateProfile } = useProfile();
