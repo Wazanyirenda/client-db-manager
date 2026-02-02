@@ -41,9 +41,12 @@ export interface ClientFormData {
   phone: string;
   address: string;
   company: string;
+  industry: string;
   status: string;
   client_type: ClientType;
   website: string;
+  has_website: string;
+  needs_website: string;
   notes: string;
   source: string;
   pipeline_stage: PipelineStage;
@@ -172,6 +175,23 @@ export function useClients() {
       if (!user) throw new Error('Not authenticated');
 
       const payload = normalizeClientPayload(clientData);
+      
+      // Build notes with additional info
+      let notes = clientData.notes || '';
+      const additionalInfo: string[] = [];
+      if (clientData.industry) {
+        additionalInfo.push(`Line of Business: ${clientData.industry}`);
+      }
+      if (clientData.has_website) {
+        additionalInfo.push(`Has Website: ${clientData.has_website}`);
+      }
+      if (clientData.needs_website) {
+        additionalInfo.push(`Needs Website: ${clientData.needs_website}`);
+      }
+      if (additionalInfo.length > 0) {
+        notes = notes ? `${notes}\n\n${additionalInfo.join('\n')}` : additionalInfo.join('\n');
+      }
+      
       const { data, error: insertError } = await supabase
         .from('clients')
         .insert({
@@ -184,7 +204,7 @@ export function useClients() {
           status: clientData.status || 'Active',
           client_type: clientData.client_type || 'Lead',
           website: clientData.website || null,
-          notes: clientData.notes || null,
+          notes: notes || null,
           source: clientData.source || null,
           pipeline_stage: payload.pipeline_stage || 'Inquiry',
           next_follow_up: payload.next_follow_up ?? null,
@@ -214,10 +234,47 @@ export function useClients() {
   const updateClient = async (id: string, clientData: Partial<ClientFormData>) => {
     try {
       const payload = normalizeClientPayload(clientData);
+      
+      // Build notes with additional info if new fields are provided
+      let updateData: any = { ...payload };
+      if (clientData.industry !== undefined || clientData.has_website !== undefined || clientData.needs_website !== undefined) {
+        // Get existing client to preserve existing notes
+        const { data: existingClient } = await supabase
+          .from('clients')
+          .select('notes')
+          .eq('id', id)
+          .single();
+        
+        let notes = existingClient?.notes || clientData.notes || '';
+        const additionalInfo: string[] = [];
+        
+        if (clientData.industry) {
+          additionalInfo.push(`Line of Business: ${clientData.industry}`);
+        }
+        if (clientData.has_website !== undefined) {
+          additionalInfo.push(`Has Website: ${clientData.has_website}`);
+        }
+        if (clientData.needs_website) {
+          additionalInfo.push(`Needs Website: ${clientData.needs_website}`);
+        }
+        
+        if (additionalInfo.length > 0) {
+          // Remove old entries if they exist and add new ones
+          notes = notes.split('\n').filter(line => 
+            !line.includes('Line of Business:') && 
+            !line.includes('Has Website:') && 
+            !line.includes('Needs Website:')
+          ).join('\n').trim();
+          notes = notes ? `${notes}\n\n${additionalInfo.join('\n')}` : additionalInfo.join('\n');
+        }
+        
+        updateData.notes = notes || null;
+      }
+      
       const { error: updateError } = await supabase
         .from('clients')
         .update({
-          ...payload,
+          ...updateData,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id);

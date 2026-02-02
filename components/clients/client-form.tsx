@@ -31,9 +31,12 @@ export function ClientForm({
     phone: initialData?.phone || '',
     address: initialData?.address || '',
     company: initialData?.company || '',
+    industry: initialData?.industry || '',
     status: initialData?.status || 'Active',
     client_type: initialData?.client_type || 'Lead',
     website: initialData?.website || '',
+    has_website: initialData?.has_website || '',
+    needs_website: initialData?.needs_website || '',
     notes: initialData?.notes || '',
     source: initialData?.source || '',
     pipeline_stage: initialData?.pipeline_stage || 'Inquiry',
@@ -57,9 +60,12 @@ export function ClientForm({
         phone: initialData.phone || '',
         address: initialData.address || '',
         company: initialData.company || '',
+        industry: initialData.industry || '',
         status: initialData.status || 'Active',
         client_type: initialData.client_type || 'Lead',
         website: initialData.website || '',
+        has_website: initialData.has_website || '',
+        needs_website: initialData.needs_website || '',
         notes: initialData.notes || '',
         source: initialData.source || '',
         pipeline_stage: initialData.pipeline_stage || 'Inquiry',
@@ -91,9 +97,12 @@ export function ClientForm({
         phone: '',
         address: '',
         company: '',
+        industry: '',
         status: 'Active',
         client_type: 'Lead',
         website: '',
+        has_website: '',
+        needs_website: '',
         notes: '',
         source: '',
         pipeline_stage: 'Inquiry',
@@ -154,27 +163,85 @@ export function ClientForm({
         {/* Company Info */}
         <div className="space-y-3">
           <label className="text-base font-semibold text-gray-800">
-            Company
+            Company Name <span className="text-red-500">*</span>
           </label>
           <input
             value={formData.company}
             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
             placeholder="Company name"
+            required
             className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="space-y-3">
           <label className="text-base font-semibold text-gray-800">
-            Website
+            Line of Business
           </label>
           <input
-            type="url"
-            value={formData.website}
-            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-            placeholder="https://example.com"
+            value={formData.industry}
+            onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+            placeholder="e.g., Technology, Healthcare, Retail, etc."
             className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        <div className="space-y-3">
+          <label className="text-base font-semibold text-gray-800">
+            Do you have a website?
+          </label>
+          <Select
+            value={formData.has_website}
+            onValueChange={(value) => {
+              setFormData({ 
+                ...formData, 
+                has_website: value,
+                website: value === 'No' ? '' : formData.website,
+                needs_website: value === 'No' ? formData.needs_website : ''
+              });
+            }}
+          >
+            <SelectTrigger className="h-12 text-base">
+              <SelectValue placeholder="Select option" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Yes" className="text-base py-3">Yes</SelectItem>
+              <SelectItem value="No" className="text-base py-3">No</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {formData.has_website === 'Yes' && (
+          <div className="space-y-3">
+            <label className="text-base font-semibold text-gray-800">
+              Website URL
+            </label>
+            <input
+              type="url"
+              value={formData.website}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              placeholder="https://example.com"
+              className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        )}
+        {formData.has_website === 'No' && (
+          <div className="space-y-3">
+            <label className="text-base font-semibold text-gray-800">
+              Do you need a website?
+            </label>
+            <Select
+              value={formData.needs_website}
+              onValueChange={(value) => setFormData({ ...formData, needs_website: value })}
+            >
+              <SelectTrigger className="h-12 text-base">
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Yes" className="text-base py-3">Yes, I need one</SelectItem>
+                <SelectItem value="No" className="text-base py-3">No, not interested</SelectItem>
+                <SelectItem value="Maybe" className="text-base py-3">Maybe later</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="space-y-3">
           <label className="text-base font-semibold text-gray-800">
             Source
