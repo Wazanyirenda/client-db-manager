@@ -59,10 +59,10 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...', onMenuTog
 
         {/* Greeting - hide on small mobile when search is open */}
         <div className={showMobileSearch ? 'hidden' : 'block'}>
-          <h1 className="text-base lg:text-lg font-semibold text-gray-900">
-            {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'there'}
+          <h1 className="text-lg lg:text-xl font-bold text-gray-900">
+            {getGreeting()}, <span className="text-blue-600">{profile?.full_name?.split(' ')[0] || 'there'}</span>
           </h1>
-          <p className="text-xs text-gray-500 hidden sm:block">
+          <p className="text-sm text-gray-600 hidden sm:block">
             {profile?.company_name || 'Manage your clients'}
           </p>
         </div>

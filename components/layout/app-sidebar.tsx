@@ -66,33 +66,26 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
       >
         {/* Logo / Brand */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-          {/* Mobile: always show brand, Desktop: hide when collapsed */}
+          {/* Logo - always visible */}
           <Link href="/dashboard" className={cn(
             'flex items-center gap-2',
-            'lg:flex',
-            collapsed && 'lg:hidden'
+            collapsed ? 'lg:justify-center lg:w-full' : ''
           )}>
             <Image
               src="/cliently-logo.png"
               alt="Cliently"
-              width={32}
-              height={32}
-              className="rounded-lg"
+              width={36}
+              height={36}
+              className="rounded-lg flex-shrink-0"
             />
-            <span className="font-bold text-lg text-blue-600">Cliently</span>
+            {/* Text - hide when collapsed on desktop */}
+            <span className={cn(
+              'font-bold text-lg text-blue-600',
+              collapsed && 'lg:hidden'
+            )}>
+              Cliently
+            </span>
           </Link>
-          {/* Collapsed: show only logo */}
-          {collapsed && (
-            <Link href="/dashboard" className="hidden lg:block mx-auto">
-              <Image
-                src="/cliently-logo.png"
-                alt="Cliently"
-                width={32}
-                height={32}
-                className="rounded-lg"
-              />
-            </Link>
-          )}
           
           {/* Mobile close button */}
           <Button

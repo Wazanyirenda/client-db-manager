@@ -12,6 +12,10 @@
  */
 
 :root {
+  /* Font */
+  --font-sans: var(--font-sans), 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono), 'JetBrains Mono', monospace;
+
   /* Background & Text */
   --background: #f9fafb;
   --foreground: #111827;
