@@ -24,6 +24,28 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
       {/* Right Side - Image/Illustration */}
       <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 relative overflow-hidden">
+        {/* Background Image - You can replace this with your own image */}
+        <div className="absolute inset-0">
+          {/* Option 1: Use the SVG illustration */}
+          <img
+            src="/auth-hero.svg"
+            alt="Cliently Dashboard"
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
+          />
+          
+          {/* Option 2: Use your own image - Uncomment and replace path: */}
+          {/* <Image
+            src="/your-image.png"
+            alt="Cliently"
+            fill
+            className="object-cover opacity-20"
+            priority
+          /> */}
+          
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/80 via-blue-700/70 to-indigo-800/80"></div>
+        </div>
+
         {/* Decorative Elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
