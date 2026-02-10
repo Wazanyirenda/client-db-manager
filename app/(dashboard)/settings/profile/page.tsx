@@ -115,21 +115,6 @@ export default function ProfileSettingsPage() {
       company_size: companySize,
     });
 
-    if (result.success) {
-      // Immediately update the profile state for instant UI feedback
-      setProfile(prev => prev ? {
-        ...prev,
-        full_name: fullName,
-        company_name: companyName,
-        phone,
-        website,
-        industry,
-        role,
-        company_size: companySize,
-        updated_at: new Date().toISOString()
-      } : null);
-    }
-
     setLoading(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
