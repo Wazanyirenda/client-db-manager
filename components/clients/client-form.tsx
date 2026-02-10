@@ -214,13 +214,13 @@ export function ClientForm({
               Website URL
             </label>
             <input
-              type="url"
-              value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-              placeholder="https://example.com"
+            type="url"
+            value={formData.website}
+            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+            placeholder="https://example.com"
               className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          />
+        </div>
         )}
         {formData.has_website === 'No' && (
           <div className="space-y-3">
@@ -310,93 +310,93 @@ export function ClientForm({
 
         {formData.client_type !== 'Data' && (
           <>
-            {/* Pipeline + Follow-up */}
+        {/* Pipeline + Follow-up */}
             <div className="space-y-3">
               <label className="text-base font-semibold text-gray-800">
-                Pipeline Stage
-              </label>
-              <Select
-                value={formData.pipeline_stage}
-                onValueChange={(value: PipelineStage) =>
-                  setFormData({ ...formData, pipeline_stage: value })
-                }
-              >
+            Pipeline Stage
+          </label>
+          <Select
+            value={formData.pipeline_stage}
+            onValueChange={(value: PipelineStage) =>
+              setFormData({ ...formData, pipeline_stage: value })
+            }
+          >
                 <SelectTrigger className="h-12 text-base">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
                   <SelectItem value="Inquiry" className="text-base py-3">Inquiry</SelectItem>
                   <SelectItem value="Contacted" className="text-base py-3">Contacted</SelectItem>
                   <SelectItem value="Proposal" className="text-base py-3">Proposal</SelectItem>
                   <SelectItem value="Won" className="text-base py-3">Won</SelectItem>
                   <SelectItem value="Lost" className="text-base py-3">Lost</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            </SelectContent>
+          </Select>
+        </div>
             <div className="space-y-3">
               <label className="text-base font-semibold text-gray-800">
-                Next Follow-up
-              </label>
+            Next Follow-up
+          </label>
               <input
-                type="datetime-local"
-                value={formData.next_follow_up}
-                onChange={(e) =>
-                  setFormData({ ...formData, next_follow_up: e.target.value })
-                }
+            type="datetime-local"
+            value={formData.next_follow_up}
+            onChange={(e) =>
+              setFormData({ ...formData, next_follow_up: e.target.value })
+            }
                 className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          />
+        </div>
           </>
         )}
 
         {formData.client_type === 'Paying' && (
           <>
-            {/* Invoice Tracking */}
+        {/* Invoice Tracking */}
             <div className="space-y-3">
               <label className="text-base font-semibold text-gray-800">
-                Deal Value
-              </label>
+            Deal Value
+          </label>
               <input
-                type="number"
-                inputMode="decimal"
-                value={formData.deal_value}
-                onChange={(e) =>
-                  setFormData({ ...formData, deal_value: e.target.value })
-                }
-                placeholder="0"
+            type="number"
+            inputMode="decimal"
+            value={formData.deal_value}
+            onChange={(e) =>
+              setFormData({ ...formData, deal_value: e.target.value })
+            }
+            placeholder="0"
                 className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          />
+        </div>
             <div className="space-y-3">
               <label className="text-base font-semibold text-gray-800">
-                Invoice Status
-              </label>
-              <Select
-                value={formData.invoice_status}
-                onValueChange={(value: InvoiceStatus) =>
-                  setFormData({ ...formData, invoice_status: value })
-                }
-              >
+            Invoice Status
+          </label>
+          <Select
+            value={formData.invoice_status}
+            onValueChange={(value: InvoiceStatus) =>
+              setFormData({ ...formData, invoice_status: value })
+            }
+          >
                 <SelectTrigger className="h-12 text-base">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
                   <SelectItem value="Unpaid" className="text-base py-3">Unpaid</SelectItem>
                   <SelectItem value="Paid" className="text-base py-3">Paid</SelectItem>
                   <SelectItem value="Overdue" className="text-base py-3">Overdue</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            </SelectContent>
+          </Select>
+        </div>
             <div className="space-y-3">
               <label className="text-base font-semibold text-gray-800">
-                Invoice Due Date
-              </label>
+            Invoice Due Date
+          </label>
               <input
-                type="date"
-                value={formData.invoice_due_date}
-                onChange={(e) =>
-                  setFormData({ ...formData, invoice_due_date: e.target.value })
-                }
+            type="date"
+            value={formData.invoice_due_date}
+            onChange={(e) =>
+              setFormData({ ...formData, invoice_due_date: e.target.value })
+            }
                 className="w-full h-12 px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -483,8 +483,8 @@ export function ClientForm({
                 onChange={(e) => setFormData({ ...formData, services: e.target.value })}
                 placeholder="Describe the services for this paying client..."
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 min-h-[120px] resize-y"
-              />
-            </div>
+          />
+        </div>
           </>
         )}
 

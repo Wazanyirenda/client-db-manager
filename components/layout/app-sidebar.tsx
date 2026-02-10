@@ -73,12 +73,12 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
               height={40}
               className="rounded-xl flex-shrink-0"
             />
-            <span className={cn(
+          <span className={cn(
               'font-bold text-xl text-blue-600 transition-opacity',
               collapsed ? 'lg:hidden lg:opacity-0' : 'lg:opacity-100'
-            )}>
+          )}>
               Cliently
-            </span>
+          </span>
           </Link>
           
           {/* Mobile close button */}
@@ -92,25 +92,25 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           </Button>
         </div>
 
-        {/* Main Navigation */}
+      {/* Main Navigation */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={handleNavClick}
-                className={cn(
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={handleNavClick}
+              className={cn(
                   'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200',
-                  isActive
+                isActive
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
                   collapsed && 'lg:justify-center lg:px-0'
-                )}
-                title={collapsed ? item.label : undefined}
-              >
+              )}
+              title={collapsed ? item.label : undefined}
+            >
                 <Icon className={cn('h-5 w-5 flex-shrink-0', collapsed && 'lg:h-6 lg:w-6')} weight={isActive ? 'fill' : 'regular'} />
                 <span className={cn(
                   'transition-opacity',
@@ -118,10 +118,10 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
                 )}>
                   {item.label}
                 </span>
-              </Link>
-            );
-          })}
-        </nav>
+            </Link>
+          );
+        })}
+      </nav>
 
         {/* Collapse Toggle - Desktop Only */}
         <div className={cn(
@@ -148,7 +148,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             )}
           </button>
         </div>
-      </aside>
+    </aside>
     </>
   );
 }

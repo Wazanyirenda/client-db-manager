@@ -309,13 +309,13 @@ export function ClientDetailsModal({
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6 pt-4 border-t border-gray-200">
           <div className="flex flex-wrap gap-2">
-            <Button 
-              variant="outline" 
-              onClick={() => onUpdateLastContact(client.id)}
-            >
-              <Phone className="h-4 w-4 mr-2" weight="fill" />
-              Log Contact
-            </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => onUpdateLastContact(client.id)}
+          >
+            <Phone className="h-4 w-4 mr-2" weight="fill" />
+            Log Contact
+          </Button>
             {client.client_type === 'Paying' && (
               <Button variant="outline" onClick={() => exportClientInvoice(client)}>
                 <FileText className="h-4 w-4 mr-2" weight="fill" />
