@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-export const createSupabaseServerClient = () => {
-  const cookieStore = cookies();
+export const createSupabaseServerClient = async () => {
+  const cookieStore = await cookies();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,25 +10,20 @@ export const createSupabaseServerClient = () => {
     {
       cookies: {
         getAll() {
-          // Next.js 16 cookies() returns ReadonlyRequestCookies which doesn't have getAll()
-          // We need to manually implement it by getting known cookie names
           const allCookies: Array<{ name: string; value: string }> = [];
           
-          // Get the project reference from the Supabase URL
           const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
           if (supabaseUrl) {
             try {
               const url = new URL(supabaseUrl);
               const projectRef = url.hostname.split('.')[0];
               
-              // Supabase uses these cookie patterns
               const cookiePatterns = [
                 `sb-${projectRef}-auth-token`,
                 `sb-${projectRef}-auth-token.0`,
                 `sb-${projectRef}-auth-token.1`,
               ];
               
-              // Try each pattern
               for (const name of cookiePatterns) {
                 try {
                   const cookie = cookieStore.get(name);
@@ -61,5 +56,3 @@ export const createSupabaseServerClient = () => {
     }
   );
 };
-
-
