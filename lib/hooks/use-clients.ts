@@ -260,7 +260,7 @@ export function useClients() {
         
         if (additionalInfo.length > 0) {
           // Remove old entries if they exist and add new ones
-          notes = notes.split('\n').filter(line => 
+          notes = notes.split('\n').filter((line: string) => 
             !line.includes('Line of Business:') && 
             !line.includes('Has Website:') && 
             !line.includes('Needs Website:')
