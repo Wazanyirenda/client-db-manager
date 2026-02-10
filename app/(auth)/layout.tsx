@@ -22,89 +22,58 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {/* Right Side - Image/Illustration */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 relative overflow-hidden">
-        {/* Background Image - You can replace this with your own image */}
-        <div className="absolute inset-0">
-          {/* Option 1: Use the SVG illustration */}
-          <img
-            src="/auth-hero.svg"
-            alt="Cliently Dashboard"
-            className="absolute inset-0 w-full h-full object-cover opacity-30"
-          />
-          
-          {/* Option 2: Use your own image - Uncomment and replace path: */}
-          {/* <Image
-            src="/your-image.png"
-            alt="Cliently"
-            fill
-            className="object-cover opacity-20"
-            priority
-          /> */}
-          
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/80 via-blue-700/70 to-indigo-800/80"></div>
-        </div>
+      {/* Right Side - Stock Image with overlay */}
+      <div className="hidden lg:block lg:flex-1 relative overflow-hidden">
+        {/* Unsplash stock image - Team collaboration */}
+        <Image
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80&fit=crop"
+          alt="Team collaborating in modern workspace"
+          fill
+          className="object-cover"
+          priority
+          sizes="50vw"
+        />
 
-        {/* Decorative Elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-300 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-300 rounded-full blur-3xl"></div>
-        </div>
+        {/* Dark gradient overlay for contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center p-12 text-white h-full">
-          <div className="max-w-md space-y-6">
-            <div className="flex items-center gap-3 mb-8">
+        {/* Bottom content overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
+          <div className="max-w-lg">
+            <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/cliently-logo.png"
                 alt="Cliently"
-                width={56}
-                height={56}
-                className="rounded-xl bg-white/10 backdrop-blur-sm p-2"
+                width={36}
+                height={36}
+                className="rounded-lg"
               />
-              <span className="text-3xl font-bold">Cliently</span>
+              <span className="text-xl font-bold">Cliently</span>
             </div>
-            <h2 className="text-4xl font-bold leading-tight">
+            <h2 className="text-3xl font-bold leading-tight mb-3">
               Manage your clients with ease
             </h2>
-            <p className="text-lg text-blue-100 leading-relaxed">
-              The simple CRM for your business. Track leads, manage relationships, and grow your client base all in one place.
+            <p className="text-white/80 text-base leading-relaxed mb-6">
+              The simple CRM for your business. Track leads, manage relationships, and grow your client base.
             </p>
-            <div className="space-y-4 mt-8">
-              <div className="flex items-start gap-3">
-                <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-semibold">Pipeline Management</p>
-                  <p className="text-sm text-blue-100">Track clients through every stage</p>
-                </div>
+            <div className="flex gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">Pipeline Management</span>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-semibold">Smart Notifications</p>
-                  <p className="text-sm text-blue-100">Never miss a follow-up or deadline</p>
-                </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">Smart Notifications</span>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-semibold">Invoice Tracking</p>
-                  <p className="text-sm text-blue-100">Keep track of payments and billing</p>
-                </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">Invoice Tracking</span>
               </div>
             </div>
           </div>
@@ -113,5 +82,3 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
-
-
