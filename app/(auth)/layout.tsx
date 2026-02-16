@@ -3,22 +3,27 @@ import Image from "next/image";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="h-screen bg-white flex overflow-hidden">
-      {/* Left Side - Form (scrolls if content is tall) */}
-      <div className="flex-1 flex justify-center p-6 lg:p-12 overflow-y-auto">
-        <div className="w-full max-w-md my-6">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
+    <div className="fixed inset-0 bg-white flex overflow-hidden">
+      {/* Left Side - Form: logo fixed, only form content scrolls */}
+      <div className="flex-1 flex flex-col min-h-0 px-5 py-4 lg:px-12 lg:py-8">
+        {/* Logo - fixed at top, no scroll */}
+        <div className="flex-shrink-0 flex justify-center mb-4 lg:mb-6">
+          <div className="w-full max-w-md flex items-center gap-3">
             <Image
               src="/cliently-logo.png"
               alt="Cliently"
-              width={40}
-              height={40}
+              width={36}
+              height={36}
               className="rounded-lg"
             />
-            <span className="text-2xl font-bold text-gray-900">Cliently</span>
+            <span className="text-xl font-bold text-gray-900">Cliently</span>
           </div>
-          {children}
+        </div>
+        {/* Form content - each page controls its own scroll */}
+        <div className="flex-1 min-h-0 flex justify-center overflow-hidden">
+          <div className="w-full max-w-md flex flex-col min-h-0">
+            {children}
+          </div>
         </div>
       </div>
 

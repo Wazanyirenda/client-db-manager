@@ -52,6 +52,27 @@ import {
 type SortField = 'name' | 'email' | 'company' | 'status' | 'client_type' | 'created_at';
 type SortDirection = 'asc' | 'desc';
 
+function extractFieldsFromNotes(notes: string | null) {
+  const result = { industry: '', has_website: '', needs_website: '', cleanNotes: '' };
+  if (!notes) return result;
+
+  const cleanLines: string[] = [];
+  for (const line of notes.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('Line of Business:')) {
+      result.industry = trimmed.replace('Line of Business:', '').trim();
+    } else if (trimmed.startsWith('Has Website:')) {
+      result.has_website = trimmed.replace('Has Website:', '').trim();
+    } else if (trimmed.startsWith('Needs Website:')) {
+      result.needs_website = trimmed.replace('Needs Website:', '').trim();
+    } else {
+      cleanLines.push(line);
+    }
+  }
+  result.cleanNotes = cleanLines.join('\n').trim();
+  return result;
+}
+
 export default function ClientsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -526,18 +547,18 @@ export default function ClientsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setViewingClient(client)}
-                  className="flex-1 h-9 text-sm"
+                  className="flex-1 h-10 text-sm font-medium text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
                 >
-                  <Eye className="h-4 w-4 mr-1.5" weight="fill" />
+                  <Eye className="h-5 w-5 mr-1.5" weight="fill" />
                   View
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setEditingClient(client)}
-                  className="flex-1 h-9 text-sm"
+                  className="flex-1 h-10 text-sm font-medium text-gray-700 hover:bg-gray-100"
                 >
-                  <PencilSimple className="h-4 w-4 mr-1.5" weight="fill" />
+                  <PencilSimple className="h-5 w-5 mr-1.5" weight="fill" />
                   Edit
                 </Button>
                 <Button
@@ -548,9 +569,9 @@ export default function ClientsPage() {
                     e.stopPropagation();
                     setDeletingClient(client);
                   }}
-                  className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:border-red-300"
+                  className="h-10 w-10 p-0 text-red-500 hover:text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300"
                 >
-                  <Trash className="h-4 w-4" weight="fill" />
+                  <Trash className="h-5 w-5" weight="fill" />
                 </Button>
               </div>
             </div>
@@ -663,19 +684,19 @@ export default function ClientsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setViewingClient(client)}
-                          className="h-9 w-9 p-0"
+                          className="h-10 w-10 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           title="View details"
                         >
-                          <Eye className="h-5 w-5" weight="fill" />
+                          <Eye className="h-[22px] w-[22px]" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingClient(client)}
-                          className="h-9 w-9 p-0"
+                          className="h-10 w-10 p-0 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
                           title="Edit client"
                         >
-                          <PencilSimple className="h-5 w-5" weight="fill" />
+                          <PencilSimple className="h-[22px] w-[22px]" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -685,10 +706,10 @@ export default function ClientsPage() {
                             e.stopPropagation();
                             setDeletingClient(client);
                           }}
-                          className="h-9 w-9 p-0 text-red-600 hover:text-red-700"
+                          className="h-10 w-10 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
                           title="Delete client"
                         >
-                          <Trash className="h-5 w-5" weight="fill" />
+                          <Trash className="h-[22px] w-[22px]" weight="fill" />
                         </Button>
                       </div>
                     </td>
@@ -778,31 +799,34 @@ export default function ClientsPage() {
         <ClientDialog
           open={!!editingClient}
           onOpenChange={(open) => !open && setEditingClient(null)}
-          initialData={{
-            name: editingClient.name,
-            email: editingClient.email || '',
-            phone: editingClient.phone || '',
-            address: editingClient.address || '',
-            company: editingClient.company || '',
-            industry: '',
-            status: editingClient.status || 'Active',
-            client_type: editingClient.client_type || 'Lead',
-            website: editingClient.website || '',
-            has_website: editingClient.website ? 'Yes' : '',
-            needs_website: '',
-            notes: editingClient.notes || '',
-            source: editingClient.source || '',
-            pipeline_stage: editingClient.pipeline_stage || 'Inquiry',
-            next_follow_up: editingClient.next_follow_up || '',
-            deal_value: editingClient.deal_value?.toString() || '',
-            invoice_status: editingClient.invoice_status || 'Unpaid',
-            invoice_due_date: editingClient.invoice_due_date || '',
-            billing_type: editingClient.billing_type || 'One-time',
-            billing_frequency: editingClient.billing_frequency || '',
-            recurring_amount: editingClient.recurring_amount?.toString() || '',
-            next_billing_date: editingClient.next_billing_date || '',
-            services: editingClient.services || '',
-          }}
+          initialData={(() => {
+            const extracted = extractFieldsFromNotes(editingClient.notes);
+            return {
+              name: editingClient.name,
+              email: editingClient.email || '',
+              phone: editingClient.phone || '',
+              address: editingClient.address || '',
+              company: editingClient.company || '',
+              industry: extracted.industry,
+              status: editingClient.status || 'Active',
+              client_type: editingClient.client_type || 'Lead',
+              website: editingClient.website || '',
+              has_website: extracted.has_website || (editingClient.website ? 'Yes' : 'No'),
+              needs_website: extracted.needs_website,
+              notes: extracted.cleanNotes,
+              source: editingClient.source || '',
+              pipeline_stage: editingClient.pipeline_stage || 'Inquiry',
+              next_follow_up: editingClient.next_follow_up || '',
+              deal_value: editingClient.deal_value?.toString() || '',
+              invoice_status: editingClient.invoice_status || 'Unpaid',
+              invoice_due_date: editingClient.invoice_due_date || '',
+              billing_type: editingClient.billing_type || 'One-time',
+              billing_frequency: editingClient.billing_frequency || '',
+              recurring_amount: editingClient.recurring_amount?.toString() || '',
+              next_billing_date: editingClient.next_billing_date || '',
+              services: editingClient.services || '',
+            };
+          })()}
           onSubmit={async (data) => {
             await updateClient(editingClient.id, data);
             setEditingClient(null);

@@ -35,17 +35,9 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...', onMenuTog
     router.push('/login');
   };
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return 'Good morning';
-    if (hour >= 12 && hour < 17) return 'Good afternoon';
-    if (hour >= 17 && hour < 21) return 'Good evening';
-    return 'Good night';
-  };
-
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
-      {/* Left: Menu Toggle (mobile) + Greeting */}
+      {/* Left: Menu Toggle (mobile) + Page context */}
       <div className="flex items-center gap-3">
         {/* Mobile Menu Toggle */}
         <Button
@@ -57,15 +49,11 @@ export function AppHeader({ onSearch, searchPlaceholder = 'Search...', onMenuTog
           <List className="h-5 w-5" weight="bold" />
         </Button>
 
-        {/* Greeting - hide on small mobile when search is open */}
-        <div className={showMobileSearch ? 'hidden' : 'block'}>
-          <h1 className="text-lg lg:text-xl font-bold text-gray-900">
-            {getGreeting()}, <span className="text-blue-600">{profile?.full_name?.split(' ')[0] || 'there'}</span>
-          </h1>
-          <p className="text-sm text-gray-600 hidden sm:block">
-            {profile?.company_name || 'Manage your clients'}
-          </p>
-        </div>
+        {!showMobileSearch && (
+          <div>
+            <h1 className="text-lg lg:text-xl font-bold text-gray-900">Cliently</h1>
+          </div>
+        )}
       </div>
 
       {/* Center: Search - Desktop */}

@@ -180,28 +180,28 @@ export default function PipelinePage() {
                     {/* Client Name */}
                     <div className="flex items-start justify-between gap-2">
                       <h4 className="font-medium text-gray-900 text-sm">{client.name}</h4>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5">
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewingClient(client);
                           }}
                         >
-                          <Eye className="h-4 w-4" weight="fill" />
+                          <Eye className="h-5 w-5" weight="fill" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingClient(client);
                           }}
                         >
-                          <PencilSimple className="h-4 w-4" weight="fill" />
+                          <PencilSimple className="h-5 w-5" weight="fill" />
                         </Button>
                       </div>
                     </div>

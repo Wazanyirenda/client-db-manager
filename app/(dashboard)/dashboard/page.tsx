@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { useClients, Client } from '@/lib/hooks/use-clients';
+import { useClients, useProfile, Client } from '@/lib/hooks/use-clients';
 import { useTasks } from '@/lib/hooks/use-tasks';
 import { useCurrency } from '@/lib/hooks/use-currency';
 import { Button } from '@/components/ui/button';
@@ -19,12 +19,25 @@ import {
   CurrencyDollar,
   TrendUp,
   Calendar,
+  Sun,
+  Moon,
+  CloudSun,
 } from '@phosphor-icons/react';
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return { text: 'Good morning', Icon: Sun };
+  if (hour >= 12 && hour < 17) return { text: 'Good afternoon', Icon: CloudSun };
+  if (hour >= 17 && hour < 21) return { text: 'Good evening', Icon: CloudSun };
+  return { text: 'Good night', Icon: Moon };
+}
 
 export default function DashboardPage() {
   const { clients, loading: clientsLoading } = useClients();
   const { tasks, loading: tasksLoading } = useTasks();
+  const { profile } = useProfile();
   const { formatAmount } = useCurrency();
+  const greeting = getGreeting();
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -99,11 +112,20 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Overview of your client management</p>
+      {/* Greeting + Page Header */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md">
+            <greeting.Icon className="h-6 w-6" weight="fill" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              {greeting.text}, <span className="text-blue-600">{profile?.full_name?.split(' ')[0] || 'there'}</span>
+            </h1>
+            <p className="text-sm text-gray-500">
+              {profile?.company_name ? `${profile.company_name} — ` : ''}Here&apos;s your overview
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <Link href="/clients" className="flex-1 sm:flex-none">

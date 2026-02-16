@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { EnvelopeSimple, Password, LinkSimple, CheckCircle } from "@phosphor-icons/react";
 
 // Google icon component
 function GoogleIcon() {
@@ -41,7 +42,11 @@ export function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if user is already logged in
+  // Magic Link state
+  const [mode, setMode] = useState<"password" | "magiclink">("password");
+  const [linkSent, setLinkSent] = useState(false);
+  const [linkLoading, setLinkLoading] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const supabase = createSupabaseBrowserClient();
@@ -92,6 +97,33 @@ export function LoginForm() {
     }
   };
 
+  const handleSendMagicLink = async () => {
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+    setError(null);
+    setLinkLoading(true);
+    const supabase = createSupabaseBrowserClient();
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    setLinkLoading(false);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    setLinkSent(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Google Sign In Button */}
@@ -114,87 +146,211 @@ export function LoginForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-gray-900" htmlFor="email">
-            Email address
-          </label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="h-12 text-base"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label
-              className="text-sm font-semibold text-gray-900"
-              htmlFor="password"
-            >
-              Password
+      {/* Mode toggle */}
+      <div className="flex rounded-lg bg-gray-100 p-1">
+        <button
+          type="button"
+          onClick={() => { setMode("password"); setLinkSent(false); setError(null); }}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-md transition-all ${
+            mode === "password"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          <Password className="h-4 w-4" weight="bold" />
+          Password
+        </button>
+        <button
+          type="button"
+          onClick={() => { setMode("magiclink"); setError(null); }}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-md transition-all ${
+            mode === "magiclink"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          <LinkSimple className="h-4 w-4" weight="bold" />
+          Magic Link
+        </button>
+      </div>
+
+      {mode === "password" ? (
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-900" htmlFor="email">
+              Email address
             </label>
-            <Link 
-              href="/forgot-password" 
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Forgot password?
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="h-12 text-base"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label
+                className="text-sm font-semibold text-gray-900"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <Link 
+                href="/forgot-password" 
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="pr-12 h-12 text-base"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-sm text-red-700 font-medium" aria-live="polite">
+                {error}
+              </p>
+            </div>
+          )}
+
+          <Button 
+            type="submit" 
+            className="w-full h-12 text-base font-semibold" 
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </Button>
+
+          <div className="text-center text-sm text-gray-600 pt-2">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+              Sign up
             </Link>
           </div>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="pr-12 h-12 text-base"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              tabIndex={-1}
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
+        </form>
+      ) : (
+        /* Magic Link sign-in */
+        <div className="space-y-5">
+          {!linkSent ? (
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-900" htmlFor="magiclink-email">
+                  Email address
+                </label>
+                <Input
+                  id="magiclink-email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="h-12 text-base"
+                />
+              </div>
+
+              <p className="text-sm text-gray-500">
+                We&apos;ll send a sign-in link to your email. Just click it and you&apos;re in — no password needed.
+              </p>
+
+              {error && (
+                <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+                  <p className="text-sm text-red-700 font-medium" aria-live="polite">
+                    {error}
+                  </p>
+                </div>
               )}
-            </button>
-          </div>
+
+              <Button
+                type="button"
+                className="w-full h-12 text-base font-semibold"
+                disabled={linkLoading || !email}
+                onClick={handleSendMagicLink}
+              >
+                <EnvelopeSimple className="h-5 w-5 mr-2" weight="bold" />
+                {linkLoading ? "Sending..." : "Send magic link"}
+              </Button>
+
+              <div className="text-center text-sm text-gray-600 pt-2">
+                Don&apos;t have an account?{" "}
+                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+                  Sign up
+                </Link>
+              </div>
+            </div>
+          ) : (
+            /* Link sent confirmation */
+            <div className="space-y-5">
+              <div className="p-6 rounded-xl bg-emerald-50 border border-emerald-200">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-6 w-6 text-emerald-600 flex-shrink-0 mt-0.5" weight="fill" />
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-emerald-900">Check your email!</p>
+                    <p className="text-sm text-emerald-700">
+                      We sent a sign-in link to <strong>{email}</strong>. Click the link in the email to sign in.
+                    </p>
+                    <p className="text-xs text-emerald-600 mt-1">
+                      Didn&apos;t receive it? Check your spam folder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 h-12 text-base"
+                  onClick={handleSendMagicLink}
+                  disabled={linkLoading}
+                >
+                  {linkLoading ? "Sending..." : "Resend link"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 h-12 text-base"
+                  onClick={() => {
+                    setLinkSent(false);
+                    setEmail("");
+                    setError(null);
+                  }}
+                >
+                  Try different email
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-
-        {error && (
-          <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-            <p className="text-sm text-red-700 font-medium" aria-live="polite">
-              {error}
-            </p>
-          </div>
-        )}
-
-        <Button 
-          type="submit" 
-          className="w-full h-12 text-base font-semibold" 
-          disabled={loading}
-        >
-          {loading ? "Signing in..." : "Sign in"}
-        </Button>
-
-        <div className="text-center text-sm text-gray-600 pt-2">
-          Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
-            Sign up
-          </Link>
-        </div>
-      </form>
+      )}
     </div>
   );
 }

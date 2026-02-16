@@ -58,39 +58,24 @@ export default function SecuritySettingsPage() {
     setMessage(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      const response = await fetch('/api/auth/delete-account', {
+        method: 'DELETE',
+      });
 
-      // Delete all user's clients
-      const { error: clientsError } = await supabase
-        .from('clients')
-        .delete()
-        .eq('user_id', user.id);
+      const data = await response.json();
 
-      if (clientsError) {
-        console.error('Error deleting clients:', clientsError);
-        // Continue even if this fails
+      if (!response.ok) {
+        if (data.error?.includes('Service role key')) {
+          // Data was deleted but auth user remains — still redirect
+          await supabase.auth.signOut();
+          router.push('/login');
+          return;
+        }
+        throw new Error(data.error || 'Failed to delete account');
       }
 
-      // Delete user's profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', user.id);
-
-      if (profileError) {
-        console.error('Error deleting profile:', profileError);
-        // Continue even if this fails
-      }
-
-      // Sign out the user
-      const { error: signOutError } = await supabase.auth.signOut();
-      
-      if (signOutError) {
-        throw signOutError;
-      }
-
-      // Redirect to login page
+      // Sign out locally and redirect
+      await supabase.auth.signOut();
       router.push('/login');
     } catch (err: any) {
       setDeleteLoading(false);
