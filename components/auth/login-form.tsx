@@ -249,9 +249,9 @@ export function LoginForm() {
             {loading ? "Signing in..." : "Sign in"}
           </Button>
 
-          <div className="text-center text-sm text-gray-600 pt-2">
+          <div className="text-center text-sm text-gray-600 pt-4 pb-2">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2">
               Sign up
             </Link>
           </div>
@@ -299,9 +299,9 @@ export function LoginForm() {
                 {linkLoading ? "Sending..." : "Send magic link"}
               </Button>
 
-              <div className="text-center text-sm text-gray-600 pt-2">
+              <div className="text-center text-sm text-gray-600 pt-4 pb-2">
                 Don&apos;t have an account?{" "}
-                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2">
                   Sign up
                 </Link>
               </div>
