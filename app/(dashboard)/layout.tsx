@@ -6,6 +6,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { AppHeader } from '@/components/layout/app-header';
 import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav';
+import { AiChat } from '@/components/ai/ai-chat';
 import { Loading } from '@/components/ui/loading';
 import { cn } from '@/lib/utils';
 
@@ -92,7 +93,12 @@ export default function DashboardLayout({
         <AppHeader onMenuToggle={handleMobileMenuToggle} />
 
         {/* Page Content - add bottom padding for mobile nav */}
-        <main className="p-4 lg:p-6 pb-20 lg:pb-6">{children}</main>
+        <main className="p-4 lg:p-6 pb-20 lg:pb-6">
+          {children}
+        </main>
+
+        {/* Floating AI Chat Assistant */}
+        <AiChat />
       </div>
 
       {/* Mobile Bottom Navigation */}

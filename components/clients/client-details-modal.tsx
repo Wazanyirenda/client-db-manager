@@ -4,6 +4,8 @@ import { Client } from '@/lib/hooks/use-clients';
 import { exportClientInvoice } from '@/lib/export';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { AiInsights } from '@/components/ai/ai-insights';
+import { AiEmailDraft } from '@/components/ai/ai-email-draft';
 import {
   Dialog,
   DialogContent,
@@ -80,7 +82,7 @@ export function ClientDetailsModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl w-[95vw] sm:w-full max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-start justify-between">
             <div>
@@ -96,6 +98,12 @@ export function ClientDetailsModal({
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
+          {/* AI Section: Insights + Email */}
+          <div className="space-y-3">
+            <AiInsights client={client} />
+            <AiEmailDraft client={client} />
+          </div>
+
           {/* Workflow */} 
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">

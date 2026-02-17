@@ -8,6 +8,7 @@ import { useCurrency } from '@/lib/hooks/use-currency';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DashboardSkeleton } from '@/components/ui/loading';
+import { AiDashboardSummary } from '@/components/ai/ai-dashboard-summary';
 import {
   Users,
   UserCheck,
@@ -142,6 +143,9 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* AI Summary */}
+      <AiDashboardSummary stats={stats} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

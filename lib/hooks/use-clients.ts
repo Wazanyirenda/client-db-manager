@@ -159,8 +159,11 @@ export function useClients() {
           ? clientData.next_billing_date
           : null;
 
+    // Strip form-only fields that don't exist as database columns
+    const { industry, has_website, needs_website, ...dbFields } = clientData;
+
     return {
-      ...clientData,
+      ...dbFields,
       deal_value: Number.isNaN(dealValue as number) ? null : dealValue,
       recurring_amount: Number.isNaN(recurringAmount as number) ? null : recurringAmount,
       next_follow_up: nextFollowUp,
